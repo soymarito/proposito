@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Inicial: Descubre tu Propósito | Coach Juan Daniel</title>
+    <!-- Meta tags SEO / Redes Sociales -->
+    <meta name="description" content="Test interactivo de autoconocimiento y propósito con Coach Juan Daniel. Da el primer paso para descubrir tus talentos innatos y pasiones.">
+    <meta property="og:title" content="Test Inicial: Descubre tu Propósito | Coach Juan Daniel">
+    <meta property="og:description" content="Completa la Etapa 1 de introspección por voz o texto y solicita tu sesión de diagnóstico estratégico con Coach Juan Daniel.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (Play CDN v3) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            200: '#a7f3d0',
+                            300: '#6ee7b7',
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome 6.5 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(145deg, #f8fafc 0%, #ecfdf5 50%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            max-height: 9000px;
+            opacity: 1;
+        }
+
+        textarea { transition: all 0.25s ease; }
+        textarea:focus {
+            outline: none;
+            border-color: #059669;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+            background-color: #ffffff;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.97); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { transform: scale(0.97); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .recording-active {
+            animation: pulse-ring 1.6s infinite cubic-bezier(0.45, 0, 0.55, 1);
+            background-color: #ef4444 !important;
+            color: #ffffff !important;
+            border-color: #dc2626 !important;
+        }
+
+        @keyframes wave {
+            0%, 100% { height: 4px; }
+            50% { height: 14px; }
+        }
+        .wave-bar { animation: wave 1s ease-in-out infinite; }
+        .wave-bar:nth-child(2) { animation-delay: 0.15s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.45s; }
+
+        #toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            transform: translateX(120%);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .toast.show { transform: translateX(0); }
+
+        .badge-unlocked {
+            background: linear-gradient(135deg, #059669 0%, #0d9488 100%) !important;
+            color: white !important;
+            border-color: #047857 !important;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+        }
+
+        /* Modo Oscuro Elegante */
+        body.dark-mode {
+            background: linear-gradient(145deg, #0b1120 0%, #0f172a 50%, #022c22 100%) !important;
+            color: #e2e8f0 !important;
+        }
+        body.dark-mode .glass-card {
+            background: rgba(15, 23, 42, 0.88) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            color: #f1f5f9 !important;
+        }
+        body.dark-mode .accordion-header {
+            background-color: rgba(30, 41, 59, 0.7) !important;
+        }
+        body.dark-mode .accordion-content {
+            background-color: #0f172a !important;
+        }
+        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode label, body.dark-mode .text-slate-900, body.dark-mode .text-slate-800 {
+            color: #f8fafc !important;
+        }
+        body.dark-mode .text-slate-600, body.dark-mode .text-slate-500, body.dark-mode .text-slate-700 {
+            color: #94a3b8 !important;
+        }
+        body.dark-mode textarea, body.dark-mode input[type="text"] {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+        body.dark-mode .btn-mic {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #e2e8f0 !important;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased pb-20">
+
+    <!-- Barra de Progreso Superior Fija -->
+    <div class="fixed top-0 left-0 w-full h-1.5 bg-slate-200 z-50">
+        <div id="topProgressBar" class="h-full bg-gradient-to-r from-emerald-500 via-teal-500 to-amber-500 transition-all duration-500" style="width: 0%;"></div>
+    </div>
+
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 pt-8">
+        
+        <!-- Header Principal -->
+        <header class="text-center mb-6">
+            <div class="flex items-center justify-between gap-2 mb-4">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 border border-emerald-300">
+                    <i class="fa-solid fa-compass mr-1.5 text-emerald-600"></i> Test Inicial de Autoconocimiento
+                </span>
+                <button id="darkModeToggleBtn" type="button" class="text-xs text-slate-600 hover:text-emerald-700 font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/80 border border-slate-200 shadow-sm transition-all">
+                    <i id="darkModeIcon" class="fa-solid fa-moon text-slate-700"></i>
+                    <span id="darkModeText">Modo Oscuro</span>
+                </button>
+            </div>
+
+            <!-- Logo Oficial Coach Juan Daniel -->
+            <div class="flex justify-center mb-4">
+                <div class="p-1.5 rounded-3xl bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 shadow-xl inline-block">
+                    <img src="logo-coach-jd.jpg" alt="Logo Coach Juan Daniel" class="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-2xl border-2 border-slate-900">
+                </div>
+            </div>
+
+            <h1 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight mb-2">
+                Descubre tu <span class="bg-clip-text text-transparent bg-gradient-to-r from-emerald-700 via-teal-600 to-amber-600">Propósito</span>
+            </h1>
+            <p class="text-sm sm:text-base text-slate-600 max-w-xl mx-auto font-light leading-relaxed">
+                Da el primer paso para conectar tus <strong>talentos innatos</strong> con tus <strong>pasiones</strong> antes de tu sesión de diagnóstico con <strong>Coach Juan Daniel</strong>.
+            </p>
+        </header>
+
+        <!-- DATOS DEL PARTICIPANTE & PROGRESO -->
+        <div class="glass-card rounded-2xl p-5 mb-6 border border-emerald-200/80">
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+                <div class="sm:col-span-7">
+                    <label for="participantName" class="block text-xs font-bold uppercase tracking-wider text-emerald-800 mb-1.5">
+                        <i class="fa-solid fa-user text-emerald-600 mr-1"></i> Tu Nombre y Apellido
+                    </label>
+                    <input type="text" id="participantName" placeholder="Escribe tu nombre aquí..." class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-emerald-600 font-semibold text-slate-800 shadow-sm">
+                </div>
+                <div class="sm:col-span-5 grid grid-cols-2 gap-2 text-center">
+                    <div id="medal-1" class="p-2.5 rounded-xl bg-slate-100 text-slate-400 border border-slate-200 text-xs font-bold transition-all flex flex-col items-center justify-center gap-1">
+                        <i class="fa-solid fa-seedling text-sm"></i>
+                        <span>Etapa 1: Raíces</span>
+                    </div>
+                    <div id="medal-2" class="p-2.5 rounded-xl bg-slate-100 text-slate-400 border border-slate-200 text-xs font-bold transition-all flex flex-col items-center justify-center gap-1">
+                        <i class="fa-solid fa-fire text-sm"></i>
+                        <span>Etapa 2: Pasiones</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instrucciones Breves -->
+        <div class="glass-card rounded-2xl p-5 mb-6 border border-white/80 text-xs sm:text-sm text-slate-600 leading-relaxed">
+            <div class="flex items-start gap-3">
+                <i class="fa-solid fa-microphone-lines text-emerald-600 text-lg mt-0.5"></i>
+                <div>
+                    <strong class="text-slate-800 block mb-0.5">¿Cómo realizar esta guía inicial?</strong>
+                    Tómate unos minutos en un lugar tranquilo. Puedes escribir o tocar el botón <strong>"Grabar respuesta"</strong> para hablar con naturalidad como si charlaras con un amigo. Al finalizar la <strong>Etapa 1</strong> (y opcionalmente la Etapa 2), podrás enviar tu ficha a <strong>Coach Juan Daniel</strong> para recibir tu devolución personalizada en sesión.
+                </div>
+            </div>
+        </div>
+
+        <!-- ACORDEÓN DE ETAPAS -->
+        <div class="space-y-4 mb-8">
+            
+            <!-- ETAPA 1 (PRINCIPAL) -->
+            <div class="accordion-item glass-card rounded-2xl overflow-hidden border border-emerald-300 shadow-sm">
+                <button class="accordion-header w-full px-6 py-4 text-left flex justify-between items-center bg-emerald-50/60 hover:bg-emerald-50 transition-colors focus:outline-none" data-accordion="fase1">
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-600 text-white font-bold text-sm shadow-sm">1</span>
+                        <div>
+                            <span class="font-bold text-slate-900 text-base sm:text-lg block">Etapa 1: Tus Raíces, Fluidez y Talentos (Esencial)</span>
+                            <span class="text-xs text-slate-500 font-light">8 preguntas para conectar con tu historia y tus facilidades naturales</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span id="badge-fase1" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-200/70 text-slate-600">0/8</span>
+                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-300" style="transform: rotate(180deg);"></i>
+                    </div>
+                </button>
+                <div class="accordion-content active bg-white" id="fase1">
+                    <div class="p-6 sm:p-8 space-y-6">
+                        
+                        <div class="question-block">
+                            <label for="q1_1" class="block text-sm font-semibold text-slate-800 mb-1.5">1. ¿Qué actividades disfrutabas tanto de niño/a que perdías la noción del tiempo?</label>
+                            <textarea id="q1_1" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                            <div class="flex items-center justify-between mt-1.5">
+                                <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q1_1">
+                                    <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                </button>
+                                <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q1_1">
+                                    <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                    <span>Escuchando...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label for="q1_2" class="block text-sm font-semibold text-slate-800 mb-1.5">2. ¿Qué habilidades o destrezas te destacaban entre tus compañeros cuando eras niño/a?</label>
+                            <textarea id="q1_2" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                            <div class="flex items-center justify-between mt-1.5">
+                                <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q1_2">
+                                    <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                </button>
+                                <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q1_2">
+                                    <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                    <span>Escuchando...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label for="q1_3" class="block text-sm font-semibold text-slate-800 mb-1.5">3. ¿Qué sueños o aspiraciones tenías en tu infancia sobre lo que querías ser o hacer?</label>
+                            <textarea id="q1_3" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                            <div class="flex items-center justify-between mt-1.5">
+                                <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q1_3">
+                                    <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                </button>
+                                <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q1_3">
+                                    <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                    <span>Escuchando...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label for="q1_4" class="block text-sm font-semibold text-slate-800 mb-1.5">4. ¿En qué actividades o tareas actuales pierdes la noción del tiempo cuando las realizas?</label>
+                            <textarea id="q1_4" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                            <div class="flex items-center justify-between mt-1.5">
+                                <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q1_4">
+                                    <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                </button>
+                                <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q1_4">
+                                    <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                    <span>Escuchando...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label for="q1_5" class="block text-sm font-semibold text-slate-800 mb-1.5">5. ¿Qué actividades te producen una sensación de satisfacción profunda y energía al realizarlas?</label>
+                            <textarea id="q1_5" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                            <div class="flex items-center justify-between mt-1.5">
+                                <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q1_5">
+                                    <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                </button>
+                                <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q1_5">
+                                    <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                    <span>Escuchando...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label for="q1_6" class="block text-sm font-semibold text-slate-800 mb-1.5">6. ¿Qué habilidades o talentos te han reconocido otras personas a lo largo de tu vida?</label>
+                            <textarea id="q1_6" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                            <div class="flex items-center justify-between mt-1.5">
+                                <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q1_6">
+                                    <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                </button>
+                                <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q1_6">
+                                    <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                    <span>Escuchando...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label for="q1_7" class="block text-sm font-semibold text-slate-800 mb-1.5">7. ¿Qué tareas o actividades realizas con facilidad mientras que otros parecen esforzarse con ellas?</label>
+                            <textarea id="q1_7" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                            <div class="flex items-center justify-between mt-1.5">
+                                <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q1_7">
+                                    <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                </button>
+                                <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q1_7">
+                                    <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                    <span>Escuchando...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label for="q1_8" class="block text-sm font-semibold text-slate-800 mb-1.5">8. ¿En qué áreas sientes que tienes limitaciones, dificultades o que te drenan la energía?</label>
+                            <textarea id="q1_8" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                            <div class="flex items-center justify-between mt-1.5">
+                                <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q1_8">
+                                    <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                </button>
+                                <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q1_8">
+                                    <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                    <span>Escuchando...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ETAPA 2 (OPCIONAL PARA QUIENES QUIERAN AVANZAR MÁS EN CASA) -->
+            <div class="accordion-item glass-card rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+                <button class="accordion-header w-full px-6 py-4 text-left flex justify-between items-center bg-slate-50/70 hover:bg-slate-100/80 transition-colors focus:outline-none" data-accordion="fase2">
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-amber-100 text-amber-800 font-bold text-sm shadow-sm">2</span>
+                        <div>
+                            <span class="font-bold text-slate-900 text-base sm:text-lg block">Etapa 2: Pasiones, Valores y Visión (Opcional - Avanzado)</span>
+                            <span class="text-xs text-slate-500 font-light">Si deseas profundizar aún más antes de tu sesión con el Coach, responde estas 6 preguntas</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span id="badge-fase2" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-200/70 text-slate-600">0/6</span>
+                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-300"></i>
+                    </div>
+                </button>
+                <div class="accordion-content bg-white" id="fase2">
+                    <div class="p-6 sm:p-8 space-y-6">
+                        
+                        <div class="question-block">
+                            <label for="q2_1" class="block text-sm font-semibold text-slate-800 mb-1.5">1. ¿Qué temas o actividades te generan curiosidad y entusiasmo genuino?</label>
+                            <textarea id="q2_1" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                            <div class="flex items-center justify-between mt-1.5">
+                                <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q2_1">
+                                    <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                </button>
+                                <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q2_1">
+                                    <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                    <span>Escuchando...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label for="q2_2" class="block text-sm font-semibold text-slate-800 mb-1.5">2. ¿Qué tipo de contenido (libros, películas, canales, charlas) consumes por gusto en tu tiempo libre?</label>
+                            <textarea id="q2_2" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                            <div class="flex items-center justify-between mt-1.5">
+                                <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q2_2">
+                                    <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                </button>
+                                <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q2_2">
+                                    <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                    <span>Escuchando...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label for="q2_3" class="block text-sm font-semibold text-slate-800 mb-1.5">3. ¿Qué valores son fundamentales para ti en la vida y en el trabajo?</label>
+                            <textarea id="q2_3" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                            <div class="flex items-center justify-between mt-1.5">
+                                <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q2_3">
+                                    <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                </button>
+                                <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q2_3">
+                                    <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                    <span>Escuchando...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label for="q2_4" class="block text-sm font-semibold text-slate-800 mb-1.5">4. ¿Qué tipo de impacto o huella te gustaría dejar en las personas y en tu entorno?</label>
+                            <textarea id="q2_4" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                            <div class="flex items-center justify-between mt-1.5">
+                                <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q2_4">
+                                    <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                </button>
+                                <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q2_4">
+                                    <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                    <span>Escuchando...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label for="q2_5" class="block text-sm font-semibold text-slate-800 mb-1.5">5. ¿Qué carreras, profesiones, negocios o proyectos has considerado que sientes que podrían encajar contigo?</label>
+                            <textarea id="q2_5" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                            <div class="flex items-center justify-between mt-1.5">
+                                <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q2_5">
+                                    <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                </button>
+                                <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q2_5">
+                                    <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                    <span>Escuchando...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label for="q2_6" class="block text-sm font-semibold text-slate-800 mb-1.5">6. ¿Qué personas admiras y qué aspectos de sus vidas, mentalidad o carreras te inspiran?</label>
+                            <textarea id="q2_6" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                            <div class="flex items-center justify-between mt-1.5">
+                                <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q2_6">
+                                    <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                </button>
+                                <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q2_6">
+                                    <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                    <span>Escuchando...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SECCIÓN FINAL: REFLEXIÓN PROPIA Y ENVÍO AL COACH JUAN DANIEL -->
+        <div class="glass-card rounded-2xl p-6 sm:p-8 mb-8 border-2 border-amber-400/60 shadow-xl">
+            <div class="mb-6">
+                <label for="sintesis" class="block text-sm sm:text-base font-bold text-slate-900 mb-1">
+                    <i class="fa-solid fa-lightbulb text-amber-500 mr-1.5"></i> ¿Qué vas descubriendo o sintiendo sobre tu propósito hasta aquí? (Opcional)
+                </label>
+                <p class="text-xs text-slate-500 font-light mb-2.5">
+                    En tus propias palabras, comparte qué ideas, emociones o descubrimientos te surgieron al responder estas preguntas.
+                </p>
+                <textarea id="sintesis" rows="3" placeholder="Escribe o graba tus comentarios aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                <div class="flex items-center justify-between mt-1.5">
+                    <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="sintesis">
+                        <i class="fa-solid fa-microphone"></i> <span>Grabar reflexión</span>
+                    </button>
+                    <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-sintesis">
+                        <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                        <span>Escuchando...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta de Cierre & Llamado a la Acción con Coach Juan Daniel -->
+            <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[#141b2d] via-[#1a233a] to-slate-900 text-white shadow-lg border border-amber-500/40">
+                <div class="flex flex-col sm:flex-row items-center gap-4 mb-5">
+                    <img src="logo-coach-jd.jpg" alt="Coach Juan Daniel" class="w-16 h-16 rounded-2xl object-cover border border-amber-400/60 shadow-md flex-shrink-0">
+                    <div class="text-center sm:text-left">
+                        <span class="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wide">Siguiente Paso</span>
+                        <h3 class="text-lg sm:text-xl font-extrabold text-white mt-1">¿Listo para descubrir tu Diagnóstico de Propósito?</h3>
+                        <p class="text-xs text-slate-300 font-light mt-1 leading-relaxed">
+                            Envía tus respuestas a <strong>Coach Juan Daniel</strong> para que las analice y puedan trabajar juntos en tu sesión personalizada de claridad y plan de acción.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button id="sendWhatsappCoachBtn" type="button" class="w-full py-3.5 px-5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-extrabold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> 1. Enviar mis Respuestas por WhatsApp
+                    </button>
+                    <button id="downloadFichaBtn" type="button" class="w-full py-3.5 px-5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-file-arrow-down text-base"></i> 2. Descargar mi Ficha para el Coach
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-400 text-xs mt-8 pb-6 border-t border-slate-200/60 pt-6 font-light">
+            <p>© 2026 - <strong>Coach Juan Daniel | Mentoría & Propósito</strong> • Todos los derechos reservados.</p>
+        </footer>
+
+    </div>
+
+    <div id="toast-container" aria-live="polite"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const STORAGE_KEY = 'testInicial_JD_respuestas';
+            const DEFAULT_COACH_PHONE = '5493786499958'; // Número oficial de Coach Juan Daniel (Argentina)
+
+            const f1Ids = ['q1_1', 'q1_2', 'q1_3', 'q1_4', 'q1_5', 'q1_6', 'q1_7', 'q1_8'];
+            const f2Ids = ['q2_1', 'q2_2', 'q2_3', 'q2_4', 'q2_5', 'q2_6'];
+            const allFieldIds = [...f1Ids, ...f2Ids, 'sintesis'];
+
+            const participantInput = document.getElementById('participantName');
+            let recognition = null;
+            let isRecording = false;
+            let activeTargetTextarea = null;
+
+            function showToast(message, type = 'info', duration = 3000) {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                const bgMap = {
+                    success: 'bg-emerald-900 border-emerald-700 text-emerald-100',
+                    error: 'bg-red-900 border-red-700 text-red-100',
+                    info: 'bg-slate-900 border-slate-800 text-slate-100',
+                    brand: 'bg-teal-900 border-teal-700 text-teal-100'
+                };
+                toast.className = `toast ${bgMap[type] || bgMap.info} px-4 py-3 rounded-xl shadow-2xl border text-xs sm:text-sm font-medium flex items-center gap-2.5`;
+                toast.innerHTML = `<i class="fa-solid fa-circle-check text-amber-400"></i> <span>${message}</span>`;
+                container.appendChild(toast);
+                requestAnimationFrame(() => toast.classList.add('show'));
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, duration);
+            }
+
+            // Modo Oscuro
+            const darkModeToggleBtn = document.getElementById('darkModeToggleBtn');
+            const darkModeIcon = document.getElementById('darkModeIcon');
+            const darkModeText = document.getElementById('darkModeText');
+            const DARK_MODE_KEY = 'descubreTuProposito_JD_dark_mode';
+
+            function applyDarkMode(isDark) {
+                if (isDark) {
+                    document.body.classList.add('dark-mode');
+                    darkModeIcon.className = 'fa-solid fa-sun text-amber-400';
+                    darkModeText.textContent = 'Modo Claro';
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    darkModeIcon.className = 'fa-solid fa-moon text-slate-700';
+                    darkModeText.textContent = 'Modo Oscuro';
+                }
+            }
+            if (localStorage.getItem(DARK_MODE_KEY) === 'true') applyDarkMode(true);
+            darkModeToggleBtn.addEventListener('click', () => {
+                const isDarkNow = !document.body.classList.contains('dark-mode');
+                applyDarkMode(isDarkNow);
+                localStorage.setItem(DARK_MODE_KEY, isDarkNow ? 'true' : 'false');
+            });
+
+            // Acordeones
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = document.getElementById(header.dataset.accordion);
+                    const isCurrentlyActive = content.classList.contains('active');
+                    if (isCurrentlyActive) {
+                        content.classList.remove('active');
+                        header.querySelector('.fa-chevron-down').style.transform = 'rotate(0deg)';
+                    } else {
+                        content.classList.add('active');
+                        header.querySelector('.fa-chevron-down').style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+
+            // Dictado por Voz
+            function initSpeechRecognition() {
+                const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!SpeechRecognitionAPI) return null;
+                const instance = new SpeechRecognitionAPI();
+                instance.lang = 'es-ES';
+                instance.continuous = true;
+                instance.interimResults = false;
+
+                instance.onresult = (event) => {
+                    let finalTranscript = '';
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) finalTranscript += event.results[i][0].transcript;
+                    }
+                    if (activeTargetTextarea && finalTranscript) {
+                        const currentVal = activeTargetTextarea.value.trim();
+                        activeTargetTextarea.value = currentVal.length > 0 ? currentVal + ' ' + finalTranscript.trim() : finalTranscript.trim();
+                        saveProgress();
+                        updateProgressCounters();
+                    }
+                };
+                instance.onerror = () => { if (isRecording) stopRecordingUI(); };
+                instance.onend = () => { if (isRecording) stopRecordingUI(); };
+                return instance;
+            }
+
+            function stopRecordingUI() {
+                isRecording = false;
+                document.querySelectorAll('.btn-mic').forEach(btn => {
+                    btn.classList.remove('recording-active');
+                    const targetTa = document.getElementById(btn.dataset.target);
+                    const hasText = targetTa && targetTa.value.trim().length > 0;
+                    btn.innerHTML = hasText 
+                        ? '<i class="fa-solid fa-microphone"></i> <span>Continuar grabando</span>'
+                        : '<i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>';
+                });
+                document.querySelectorAll('.recording-indicator').forEach(ind => {
+                    ind.classList.add('hidden');
+                    ind.classList.remove('flex');
+                });
+            }
+
+            document.querySelectorAll('.btn-mic').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+                        showToast('Usa Chrome, Edge o Safari para dictar por voz.', 'error', 3500);
+                        return;
+                    }
+                    const targetId = this.dataset.target;
+                    const textarea = document.getElementById(targetId);
+                    const indicator = document.getElementById(`recording-${targetId}`);
+
+                    if (isRecording) {
+                        if (recognition) recognition.stop();
+                        stopRecordingUI();
+                        showToast('Grabación guardada.', 'info', 1500);
+                    } else {
+                        activeTargetTextarea = textarea;
+                        recognition = initSpeechRecognition();
+                        if (!recognition) return;
+                        try {
+                            recognition.start();
+                            isRecording = true;
+                            this.classList.add('recording-active');
+                            this.innerHTML = '<i class="fa-solid fa-pause"></i> <span>Pausar / Detener</span>';
+                            if (indicator) { indicator.classList.remove('hidden'); indicator.classList.add('flex'); }
+                        } catch (err) { stopRecordingUI(); }
+                    }
+                });
+            });
+
+            function getFormData() {
+                const data = { participantName: participantInput.value.trim(), updatedAt: new Date().toLocaleString('es-AR') };
+                allFieldIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) data[id] = el.value;
+                });
+                return data;
+            }
+
+            function saveProgress() {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(getFormData()));
+            }
+
+            function loadProgress() {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    try {
+                        const data = JSON.parse(raw);
+                        participantInput.value = data.participantName || '';
+                        allFieldIds.forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el) el.value = data[id] || '';
+                        });
+                    } catch (e) {}
+                }
+                updateProgressCounters();
+                stopRecordingUI();
+            }
+
+            document.querySelectorAll('textarea, #participantName').forEach(el => {
+                el.addEventListener('input', () => {
+                    saveProgress();
+                    updateProgressCounters();
+                });
+            });
+
+            function updateProgressCounters() {
+                const countAnswered = (arr) => arr.filter(id => {
+                    const el = document.getElementById(id);
+                    return el && el.value.trim().length > 2;
+                }).length;
+
+                const c1 = countAnswered(f1Ids);
+                const c2 = countAnswered(f2Ids);
+
+                document.getElementById('badge-fase1').textContent = `${c1}/8`;
+                document.getElementById('badge-fase2').textContent = `${c2}/6`;
+
+                const m1El = document.getElementById('medal-1');
+                const m2El = document.getElementById('medal-2');
+                if (c1 === 8) m1El.classList.add('badge-unlocked'); else m1El.classList.remove('badge-unlocked');
+                if (c2 === 6) m2El.classList.add('badge-unlocked'); else m2El.classList.remove('badge-unlocked');
+
+                const percent = Math.min(100, Math.round((c1 / 8) * 100));
+                document.getElementById('topProgressBar').style.width = `${percent}%`;
+            }
+
+            function getVal(id) {
+                const el = document.getElementById(id);
+                return el && el.value.trim() ? el.value.trim() : 'Sin respuesta.';
+            }
+
+            // Botón 1: Enviar respuestas por WhatsApp al Coach
+            document.getElementById('sendWhatsappCoachBtn').addEventListener('click', () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const phone = (urlParams.get('tel') || localStorage.getItem('descubreTuProposito_JD_whatsapp') || DEFAULT_COACH_PHONE).replace(/\D/g, '');
+                const name = participantInput.value.trim() || 'Participante';
+
+                let msgText = `¡Hola Coach Juan Daniel! Completé mi *Test Inicial: Descubre tu Propósito*.\n\n`;
+                msgText += `👤 *Nombre:* ${name}\n\n`;
+                msgText += `*--- ETAPA 1: RAÍCES Y TALENTOS ---*\n`;
+                msgText += `1. Infancia (Fluidez): ${getVal('q1_1')}\n`;
+                msgText += `2. Destrezas de niño/a: ${getVal('q1_2')}\n`;
+                msgText += `3. Sueños de infancia: ${getVal('q1_3')}\n`;
+                msgText += `4. Fluidez actual: ${getVal('q1_4')}\n`;
+                msgText += `5. Satisfacción profunda: ${getVal('q1_5')}\n`;
+                msgText += `6. Talentos reconocidos: ${getVal('q1_6')}\n`;
+                msgText += `7. Tareas fáciles: ${getVal('q1_7')}\n`;
+                msgText += `8. Limitaciones: ${getVal('q1_8')}\n\n`;
+
+                const c2Answered = f2Ids.some(id => getVal(id) !== 'Sin respuesta.');
+                if (c2Answered) {
+                    msgText += `*--- ETAPA 2: PASIONES Y VALORES ---*\n`;
+                    msgText += `1. Curiosidad: ${getVal('q2_1')}\n`;
+                    msgText += `2. Contenidos: ${getVal('q2_2')}\n`;
+                    msgText += `3. Valores: ${getVal('q2_3')}\n`;
+                    msgText += `4. Impacto deseado: ${getVal('q2_4')}\n`;
+                    msgText += `5. Opciones consideradas: ${getVal('q2_5')}\n`;
+                    msgText += `6. Personas que admiro: ${getVal('q2_6')}\n\n`;
+                }
+
+                if (getVal('sintesis') !== 'Sin respuesta.') {
+                    msgText += `💡 *Mi reflexión inicial:* ${getVal('sintesis')}\n\n`;
+                }
+
+                msgText += `¡Me gustaría coordinar nuestra sesión para ver mi diagnóstico!`;
+
+                const baseUrl = phone ? `https://wa.me/${phone}` : `https://wa.me/`;
+                window.open(`${baseUrl}?text=${encodeURIComponent(msgText)}`, '_blank');
+            });
+
+            // Botón 2: Descargar archivo JSON compatible al 100% con el Panel Maestro del Coach
+            document.getElementById('downloadFichaBtn').addEventListener('click', () => {
+                const data = getFormData();
+                const nameSlug = (data.participantName || 'Proposito').replace(/\s+/g, '-');
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Ficha-Inicial-${nameSlug}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('¡Ficha descargada! Puedes adjuntársela por WhatsApp al Coach Juan Daniel.', 'success', 4000);
+            });
+
+            loadProgress();
+        });
+    </script>
+</body>
+</html>

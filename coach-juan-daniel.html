@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descubre tu Propósito | Coach Juan Daniel - Mentoría Estratégica & IA</title>
+    <!-- Meta tags SEO / Redes Sociales -->
+    <meta name="description" content="Descubre tu Propósito con Coach Juan Daniel: herramienta interactiva de autoconocimiento, talentos y planificación estratégica potenciada con Inteligencia Artificial.">
+    <meta property="og:title" content="Descubre tu Propósito | Coach Juan Daniel">
+    <meta property="og:description" content="Conecta tus talentos innatos con tus pasiones y diseña tu plan de acción estratégico junto a Coach Juan Daniel.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (Play CDN v3) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            200: '#a7f3d0',
+                            300: '#6ee7b7',
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome 6.5 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <!-- PDF.js & Mammoth.js para importar PDFs y Word (.docx) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(145deg, #f8fafc 0%, #ecfdf5 50%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            max-height: 9000px;
+            opacity: 1;
+        }
+
+        textarea { transition: all 0.25s ease; }
+        textarea:focus {
+            outline: none;
+            border-color: #059669;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+            background-color: #ffffff;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.97); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { transform: scale(0.97); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .recording-active {
+            animation: pulse-ring 1.6s infinite cubic-bezier(0.45, 0, 0.55, 1);
+            background-color: #ef4444 !important;
+            color: #ffffff !important;
+            border-color: #dc2626 !important;
+        }
+
+        @keyframes wave {
+            0%, 100% { height: 4px; }
+            50% { height: 14px; }
+        }
+        .wave-bar { animation: wave 1s ease-in-out infinite; }
+        .wave-bar:nth-child(2) { animation-delay: 0.15s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.45s; }
+
+        #toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            transform: translateX(120%);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .toast.show { transform: translateX(0); }
+
+        .badge-unlocked {
+            background: linear-gradient(135deg, #059669 0%, #0d9488 100%) !important;
+            color: white !important;
+            border-color: #047857 !important;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+        }
+
+        /* Modo Oscuro Elegante */
+        body.dark-mode {
+            background: linear-gradient(145deg, #0b1120 0%, #0f172a 50%, #022c22 100%) !important;
+            color: #e2e8f0 !important;
+        }
+        body.dark-mode .glass-card {
+            background: rgba(15, 23, 42, 0.88) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            color: #f1f5f9 !important;
+        }
+        body.dark-mode .accordion-header {
+            background-color: rgba(30, 41, 59, 0.7) !important;
+        }
+        body.dark-mode .accordion-header:hover {
+            background-color: rgba(51, 65, 85, 0.8) !important;
+        }
+        body.dark-mode .accordion-content {
+            background-color: #0f172a !important;
+        }
+        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h5, body.dark-mode label, body.dark-mode .text-slate-900, body.dark-mode .text-slate-800 {
+            color: #f8fafc !important;
+        }
+        body.dark-mode .text-slate-600, body.dark-mode .text-slate-500, body.dark-mode .text-slate-700 {
+            color: #94a3b8 !important;
+        }
+        body.dark-mode textarea, body.dark-mode input[type="text"], body.dark-mode select {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+        body.dark-mode textarea:focus, body.dark-mode input[type="text"]:focus {
+            background-color: #0f172a !important;
+            border-color: #10b981 !important;
+        }
+        body.dark-mode .btn-mic {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #e2e8f0 !important;
+        }
+        body.dark-mode .btn-mic:hover {
+            background-color: #334155 !important;
+        }
+        body.dark-mode .bg-slate-50\/80, body.dark-mode .bg-slate-100, body.dark-mode .bg-white\/70 {
+            background-color: rgba(30, 41, 59, 0.7) !important;
+            border-color: #334155 !important;
+        }
+        body.dark-mode .border-slate-100, body.dark-mode .border-slate-200 {
+            border-color: #1e293b !important;
+        }
+
+        @media print {
+            body { background: white !important; }
+            .no-print { display: none !important; }
+            .accordion-content { max-height: none !important; opacity: 1 !important; display: block !important; overflow: visible !important; }
+            .glass-card { box-shadow: none !important; border: 1px solid #e2e8f0 !important; }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased pb-20">
+
+    <!-- Barra de Progreso Superior Fija -->
+    <div class="fixed top-0 left-0 w-full h-1.5 bg-slate-200 z-50 no-print">
+        <div id="topProgressBar" class="h-full bg-gradient-to-r from-emerald-500 via-teal-500 to-amber-500 transition-all duration-500" style="width: 0%;"></div>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 pt-8">
+        
+        <!-- Header Principal Coach Juan Daniel -->
+        <header class="text-center mb-6">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-4 no-print">
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 border border-emerald-300">
+                        <i class="fa-solid fa-crown mr-1.5 text-amber-500"></i> Mentoría Estratégica • Coach Juan Daniel
+                    </span>
+                    <span id="progressBadge" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                        0% completado
+                    </span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="darkModeToggleBtn" type="button" class="text-xs text-slate-600 hover:text-emerald-700 font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/80 border border-slate-200 shadow-sm transition-all">
+                        <i id="darkModeIcon" class="fa-solid fa-moon text-slate-700"></i>
+                        <span id="darkModeText">Modo Oscuro</span>
+                    </button>
+                    <button id="toggleConfigBtn" type="button" class="text-xs text-slate-500 hover:text-emerald-700 font-semibold flex items-center gap-1 px-2.5 py-1.5 rounded-full hover:bg-emerald-50 transition-all">
+                        <i class="fa-solid fa-gear"></i> <span class="hidden sm:inline">WhatsApp Coach</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Panel desplegable para configurar el teléfono del Coach Juan Daniel -->
+            <div id="coachConfigPanel" class="hidden mb-5 p-4 rounded-2xl bg-slate-900 text-white text-left shadow-lg no-print">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                            <i class="fa-brands fa-whatsapp"></i> Configuración de Teléfono para Recepción de Diagnósticos
+                        </h4>
+                        <p class="text-[11px] text-slate-300 font-light mt-0.5">Ingresa el número con código de país (sin + ni espacios, ej: 5493794000000). Quedará guardado en este dispositivo.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="coachPhoneInput" placeholder="Ej: 5493786499958" class="rounded-xl px-3 py-1.5 text-xs text-slate-900 bg-white font-mono w-44 focus:outline-none">
+                        <button id="saveCoachPhoneBtn" type="button" class="px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs rounded-xl transition-all">
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logo Oficial Coach Juan Daniel -->
+            <div class="flex justify-center mb-4">
+                <div class="p-1.5 rounded-3xl bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 shadow-xl inline-block">
+                    <img id="coachLogoImg" src="logo-coach-jd.jpg" alt="Logo Coach Juan Daniel" class="w-28 h-28 sm:w-32 sm:h-32 object-cover rounded-2xl border-2 border-slate-900">
+                </div>
+            </div>
+
+            <h1 class="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight mb-2">
+                Descubre tu <span class="bg-clip-text text-transparent bg-gradient-to-r from-emerald-700 via-teal-600 to-amber-600">Propósito</span>
+            </h1>
+            <p class="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto font-light leading-relaxed">
+                Guía interactiva para alinear tus <strong>talentos innatos</strong>, tus <strong>pasiones</strong> y tu <strong>plan de acción</strong> en sesiones de mentoría 1-a-1.
+            </p>
+
+            <!-- Banner Oficial Coach Juan Daniel -->
+            <div class="mt-5 p-4 rounded-2xl bg-gradient-to-r from-[#141b2d] via-[#1a233a] to-slate-900 text-white shadow-lg border border-amber-500/30 text-left flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <img src="logo-coach-jd.jpg" alt="JD" class="w-14 h-14 rounded-xl object-cover border border-amber-400/50 shadow-md flex-shrink-0">
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <h3 class="font-bold text-amber-300 text-sm sm:text-base">Coach Juan Daniel | Mentoría & Propósito</h3>
+                            <span class="bg-amber-400/20 text-amber-200 border border-amber-400/40 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wide">Sesión 1-a-1</span>
+                        </div>
+                        <p class="text-xs text-slate-300 font-light mt-0.5">
+                            Puedes completarla de forma autónoma o junto al Coach durante tu sesión personalizada.
+                        </p>
+                    </div>
+                </div>
+                <button id="topWhatsappCoachBtn" type="button" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 text-xs font-extrabold rounded-xl shadow-md transition-all flex-shrink-0 no-print">
+                    <i class="fa-brands fa-whatsapp text-sm"></i> Enviar al WhatsApp del Coach
+                </button>
+            </div>
+        </header>
+
+        <!-- PANEL MODO CONSULTORIO (GESTIÓN DE CLIENTES / PACIENTES) & GAMIFICACIÓN -->
+        <div class="glass-card rounded-2xl p-5 mb-6 border border-emerald-200/80">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+                <!-- Datos del Cliente / Coachee (Apilado limpio para que el campo de nombre tenga ancho completo) -->
+                <div class="lg:col-span-7 flex flex-col gap-3">
+                    <div class="w-full">
+                        <label for="participantName" class="block text-xs font-bold uppercase tracking-wider text-emerald-800 mb-1.5">
+                            <i class="fa-solid fa-user-check text-emerald-600 mr-1.5"></i> Nombre del Cliente / Coachee en Sesión
+                        </label>
+                        <input type="text" id="participantName" placeholder="Escribe aquí el nombre y apellido del cliente..." class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-emerald-600 font-semibold text-slate-800 shadow-sm">
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 no-print">
+                        <button id="saveSessionBtn" type="button" title="Guardar ficha del cliente en este dispositivo" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-floppy-disk"></i> <span>Guardar en Historial</span>
+                        </button>
+                        <button id="exportJsonBtn" type="button" title="Descargar archivo de ficha para enviarlo o llevarlo a otra PC" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-export"></i> <span>Descargar Ficha</span>
+                        </button>
+                        <label for="importJsonInput" title="Cargar ficha o análisis previo en formato PDF, Word (.docx), TXT o JSON" class="cursor-pointer px-3.5 py-2 bg-teal-50 hover:bg-teal-100 text-teal-900 text-xs font-bold rounded-xl border border-teal-300 transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-import text-teal-700"></i> <span>Subir Archivo (PDF / TXT / JSON)</span>
+                            <input type="file" id="importJsonInput" accept=".json,.txt,.pdf,.docx,.md" class="hidden">
+                        </label>
+                        <button id="openPasteModalBtn" type="button" title="Pegar texto de un análisis o respuestas copiadas de WhatsApp o documento" class="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 text-xs font-bold rounded-xl border border-emerald-300 transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-paste text-emerald-700"></i> <span>Pegar Texto</span>
+                        </button>
+                        <button id="newSessionBtn" type="button" title="Abrir ficha en blanco para nuevo cliente" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200 transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-user-plus"></i> <span>Nuevo Cliente</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Insignias de Gamificación -->
+                <div class="lg:col-span-5 border-t lg:border-t-0 lg:border-l border-slate-200/70 pt-4 lg:pt-0 lg:pl-5">
+                    <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Etapas de Claridad Desbloqueadas</span>
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div id="medal-1" class="p-2 rounded-xl bg-slate-100 text-slate-400 border border-slate-200 text-[11px] font-bold transition-all flex flex-col items-center justify-center gap-1">
+                            <i class="fa-solid fa-seedling text-sm"></i>
+                            <span>1. Raíces</span>
+                        </div>
+                        <div id="medal-2" class="p-2 rounded-xl bg-slate-100 text-slate-400 border border-slate-200 text-[11px] font-bold transition-all flex flex-col items-center justify-center gap-1">
+                            <i class="fa-solid fa-compass text-sm"></i>
+                            <span>2. Propósito</span>
+                        </div>
+                        <div id="medal-3" class="p-2 rounded-xl bg-slate-100 text-slate-400 border border-slate-200 text-[11px] font-bold transition-all flex flex-col items-center justify-center gap-1">
+                            <i class="fa-solid fa-trophy text-sm"></i>
+                            <span>3. Imparable</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selector de Fichas de Clientes Guardadas -->
+            <div id="savedSessionsBar" class="hidden mt-3 pt-3 border-t border-slate-100 flex items-center justify-between gap-2 text-xs no-print">
+                <div class="flex items-center gap-2 flex-1">
+                    <i class="fa-solid fa-address-book text-emerald-600"></i>
+                    <span class="font-semibold text-slate-600">Historial de Clientes:</span>
+                    <select id="savedSessionsSelect" class="rounded-lg border border-slate-200 px-2.5 py-1 text-xs bg-slate-50 text-slate-700 font-medium focus:outline-none">
+                        <option value="">-- Seleccionar ficha de cliente --</option>
+                    </select>
+                </div>
+                <button id="deleteSessionBtn" type="button" class="text-red-500 hover:text-red-700 text-[11px] font-medium px-2 py-1">
+                    <i class="fa-solid fa-trash-can mr-1"></i>Eliminar ficha
+                </button>
+            </div>
+
+            <!-- Panel desplegable para Pegar Texto Libre / Análisis Antiguos -->
+            <div id="pasteTextModal" class="hidden mt-4 pt-4 border-t border-slate-200 no-print">
+                <div class="flex items-center justify-between mb-2">
+                    <label for="rawPasteTextarea" class="text-xs font-bold text-emerald-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-wand-magic-sparkles text-emerald-600"></i> Pegar Respuestas o Análisis de Texto / PDF / WhatsApp
+                    </label>
+                    <button id="closePasteModalBtn" type="button" class="text-xs text-slate-400 hover:text-slate-600">
+                        <i class="fa-solid fa-xmark"></i> Cerrar
+                    </button>
+                </div>
+                <p class="text-[11px] text-slate-500 font-light mb-2">
+                    Pega aquí cualquier texto copiado (un análisis anterior, un prompt exportado o notas de un cliente). El sistema distribuirá las respuestas en sus casillas o lo guardará en el Diagnóstico de la sesión.
+                </p>
+                <textarea id="rawPasteTextarea" rows="4" placeholder="Pega aquí el contenido completo..." class="w-full rounded-xl border border-slate-300 p-3 text-xs bg-slate-50 mb-2"></textarea>
+                <div class="flex justify-end gap-2">
+                    <button id="processPasteBtn" type="button" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-bolt"></i> Procesar e Importar a la Ficha
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta de Instrucciones y Concepto -->
+        <div class="glass-card rounded-2xl p-6 mb-6 border border-white/80">
+            <div class="flex items-start gap-4">
+                <div class="p-3 bg-emerald-600 text-white rounded-xl shadow-md hidden sm:flex items-center justify-center flex-shrink-0 w-11 h-11">
+                    <i class="fa-solid fa-compass text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-base sm:text-lg font-bold text-slate-800 mb-1">¿Cómo descubrir tu Propósito y tu Elemento?</h2>
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-light mb-3">
+                        Inspirado en el concepto de <em>'El Elemento'</em> de Sir Ken Robinson, tu propósito florece en el punto exacto donde se cruzan tus <strong>aptitudes naturales</strong> (lo que haces con fluidez) y tus <strong>pasiones profundas</strong> (lo que te enciende y da sentido). Responde con total autenticidad.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-3 border-t border-slate-100 text-xs text-slate-700">
+                <div class="p-2.5 rounded-xl bg-slate-50/80 border border-slate-200/70 flex items-start gap-2">
+                    <span class="w-5 h-5 rounded-lg bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center flex-shrink-0 text-[11px]">1</span>
+                    <div>
+                        <strong class="font-semibold block text-slate-800">Introspección por Voz o Texto</strong>
+                        <span class="text-slate-500 font-light text-[11px]">Habla con naturalidad. Puedes pausar y retomar la grabación en cada pregunta.</span>
+                    </div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-slate-50/80 border border-slate-200/70 flex items-start gap-2">
+                    <span class="w-5 h-5 rounded-lg bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center flex-shrink-0 text-[11px]">2</span>
+                    <div>
+                        <strong class="font-semibold block text-slate-800">Análisis con IA (Prompt 1)</strong>
+                        <span class="text-slate-500 font-light text-[11px]">Descubre tus patrones ocultos, fortalezas clave y áreas de desarrollo.</span>
+                    </div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-slate-50/80 border border-slate-200/70 flex items-start gap-2">
+                    <span class="w-5 h-5 rounded-lg bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center flex-shrink-0 text-[11px]">3</span>
+                    <div>
+                        <strong class="font-semibold block text-slate-800">Plan de Acción & Reporte</strong>
+                        <span class="text-slate-500 font-light text-[11px]">Diseña tus metas en Fase 3, descarga tu Tarjeta Visual o envía todo al Coach.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACORDEÓN DE FASES -->
+        <div class="space-y-4 mb-8">
+            
+            <!-- FASE 1 -->
+            <div class="accordion-item glass-card rounded-2xl overflow-hidden border border-slate-200 shadow-sm transition-all duration-300">
+                <button class="accordion-header w-full px-6 py-4 text-left flex justify-between items-center bg-slate-50/70 hover:bg-slate-100/80 transition-colors focus:outline-none" data-accordion="fase1">
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 font-bold text-sm shadow-sm">I</span>
+                        <div>
+                            <span class="font-bold text-slate-900 text-base sm:text-lg block">Fase 1: Reflexión sobre el Pasado y el Presente</span>
+                            <span class="text-xs text-slate-500 font-light">Recuerdos de infancia, estado de fluidez y fortalezas innatas</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span id="badge-fase1" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-200/70 text-slate-600">0/8</span>
+                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-300" style="transform: rotate(180deg);"></i>
+                    </div>
+                </button>
+                <div class="accordion-content active bg-white" id="fase1">
+                    <div class="p-6 sm:p-8 space-y-8">
+                        
+                        <div>
+                            <h4 class="text-xs font-bold text-emerald-700 uppercase tracking-widest mb-4 flex items-center gap-2 pb-2 border-b border-slate-100">
+                                <i class="fa-solid fa-shapes"></i> Recuerdos de la Infancia
+                            </h4>
+                            <div class="space-y-6">
+                                <div class="question-block" data-qid="q1_1">
+                                    <label for="q1_1" class="block text-sm font-semibold text-slate-800 mb-1.5">1. ¿Qué actividades disfrutabas tanto de niño/a que perdías la noción del tiempo?</label>
+                                    <textarea id="q1_1" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q1_1">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q1_1">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="question-block" data-qid="q1_2">
+                                    <label for="q1_2" class="block text-sm font-semibold text-slate-800 mb-1.5">2. ¿Qué habilidades o destrezas te destacaban entre tus compañeros cuando eras niño/a?</label>
+                                    <textarea id="q1_2" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q1_2">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q1_2">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="question-block" data-qid="q1_3">
+                                    <label for="q1_3" class="block text-sm font-semibold text-slate-800 mb-1.5">3. ¿Qué sueños o aspiraciones tenías en tu infancia sobre lo que querías ser o hacer?</label>
+                                    <textarea id="q1_3" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q1_3">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q1_3">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-xs font-bold text-emerald-700 uppercase tracking-widest mb-4 flex items-center gap-2 pb-2 border-b border-slate-100">
+                                <i class="fa-solid fa-bolt"></i> Experiencias de Fluidez (Estado de Flow)
+                            </h4>
+                            <div class="space-y-6">
+                                <div class="question-block" data-qid="q1_4">
+                                    <label for="q1_4" class="block text-sm font-semibold text-slate-800 mb-1.5">4. ¿En qué actividades o tareas actuales pierdes la noción del tiempo cuando las realizas?</label>
+                                    <textarea id="q1_4" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q1_4">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q1_4">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="question-block" data-qid="q1_5">
+                                    <label for="q1_5" class="block text-sm font-semibold text-slate-800 mb-1.5">5. ¿Qué actividades te producen una sensación de satisfacción profunda y energía al realizarlas?</label>
+                                    <textarea id="q1_5" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q1_5">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q1_5">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-xs font-bold text-emerald-700 uppercase tracking-widest mb-4 flex items-center gap-2 pb-2 border-b border-slate-100">
+                                <i class="fa-solid fa-chart-simple"></i> Fortalezas y Debilidades
+                            </h4>
+                            <div class="space-y-6">
+                                <div class="question-block" data-qid="q1_6">
+                                    <label for="q1_6" class="block text-sm font-semibold text-slate-800 mb-1.5">6. ¿Qué habilidades o talentos te han reconocido otras personas a lo largo de tu vida?</label>
+                                    <textarea id="q1_6" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q1_6">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q1_6">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="question-block" data-qid="q1_7">
+                                    <label for="q1_7" class="block text-sm font-semibold text-slate-800 mb-1.5">7. ¿Qué tareas o actividades realizas con facilidad mientras que otros parecen esforzarse con ellas?</label>
+                                    <textarea id="q1_7" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q1_7">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q1_7">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="question-block" data-qid="q1_8">
+                                    <label for="q1_8" class="block text-sm font-semibold text-slate-800 mb-1.5">8. ¿En qué áreas sientes que tienes limitaciones, dificultades o que te drenan la energía?</label>
+                                    <textarea id="q1_8" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q1_8">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q1_8">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- FASE 2 -->
+            <div class="accordion-item glass-card rounded-2xl overflow-hidden border border-slate-200 shadow-sm transition-all duration-300">
+                <button class="accordion-header w-full px-6 py-4 text-left flex justify-between items-center bg-slate-50/70 hover:bg-slate-100/80 transition-colors focus:outline-none" data-accordion="fase2">
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 font-bold text-sm shadow-sm">II</span>
+                        <div>
+                            <span class="font-bold text-slate-900 text-base sm:text-lg block">Fase 2: Exploración y Apertura a Posibilidades</span>
+                            <span class="text-xs text-slate-500 font-light">Intereses, pasiones, valores fundamentales y visión de impacto</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span id="badge-fase2" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-200/70 text-slate-600">0/6</span>
+                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-300"></i>
+                    </div>
+                </button>
+                <div class="accordion-content bg-white" id="fase2">
+                    <div class="p-6 sm:p-8 space-y-8">
+                        
+                        <div>
+                            <h4 class="text-xs font-bold text-emerald-700 uppercase tracking-widest mb-4 flex items-center gap-2 pb-2 border-b border-slate-100">
+                                <i class="fa-solid fa-compass-drafting"></i> Intereses y Pasiones
+                            </h4>
+                            <div class="space-y-6">
+                                <div class="question-block" data-qid="q2_1">
+                                    <label for="q2_1" class="block text-sm font-semibold text-slate-800 mb-1.5">1. ¿Qué temas o actividades te generan curiosidad y entusiasmo genuino?</label>
+                                    <textarea id="q2_1" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q2_1">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q2_1">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="question-block" data-qid="q2_2">
+                                    <label for="q2_2" class="block text-sm font-semibold text-slate-800 mb-1.5">2. ¿Qué tipo de contenido (libros, películas, canales, charlas) consumes por gusto en tu tiempo libre?</label>
+                                    <textarea id="q2_2" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q2_2">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q2_2">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-xs font-bold text-emerald-700 uppercase tracking-widest mb-4 flex items-center gap-2 pb-2 border-b border-slate-100">
+                                <i class="fa-solid fa-heart-pulse"></i> Valores y Propósito
+                            </h4>
+                            <div class="space-y-6">
+                                <div class="question-block" data-qid="q2_3">
+                                    <label for="q2_3" class="block text-sm font-semibold text-slate-800 mb-1.5">3. ¿Qué valores son fundamentales para ti en la vida y en el trabajo?</label>
+                                    <textarea id="q2_3" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q2_3">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q2_3">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="question-block" data-qid="q2_4">
+                                    <label for="q2_4" class="block text-sm font-semibold text-slate-800 mb-1.5">4. ¿Qué tipo de impacto o huella te gustaría dejar en las personas y en tu entorno?</label>
+                                    <textarea id="q2_4" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q2_4">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q2_4">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-xs font-bold text-emerald-700 uppercase tracking-widest mb-4 flex items-center gap-2 pb-2 border-b border-slate-100">
+                                <i class="fa-solid fa-lightbulb"></i> Exploración de Opciones
+                            </h4>
+                            <div class="space-y-6">
+                                <div class="question-block" data-qid="q2_5">
+                                    <label for="q2_5" class="block text-sm font-semibold text-slate-800 mb-1.5">5. ¿Qué carreras, profesiones, negocios o proyectos has considerado que sientes que podrían encajar contigo?</label>
+                                    <textarea id="q2_5" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q2_5">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q2_5">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="question-block" data-qid="q2_6">
+                                    <label for="q2_6" class="block text-sm font-semibold text-slate-800 mb-1.5">6. ¿Qué personas admiras y qué aspectos de sus vidas, mentalidad o carreras te inspiran?</label>
+                                    <textarea id="q2_6" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q2_6">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q2_6">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- FASE 3 -->
+            <div class="accordion-item glass-card rounded-2xl overflow-hidden border border-slate-200 shadow-sm transition-all duration-300">
+                <button class="accordion-header w-full px-6 py-4 text-left flex justify-between items-center bg-slate-50/70 hover:bg-slate-100/80 transition-colors focus:outline-none" data-accordion="fase3">
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 font-bold text-sm shadow-sm">III</span>
+                        <div>
+                            <span class="font-bold text-slate-900 text-base sm:text-lg block">Fase 3: Planificación y Acción Estratégica</span>
+                            <span class="text-xs text-slate-500 font-light">Metas a corto y mediano plazo, recursos, mentalidad y métricas</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span id="badge-fase3" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-200/70 text-slate-600">0/5</span>
+                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-300"></i>
+                    </div>
+                </button>
+                <div class="accordion-content bg-white" id="fase3">
+                    <div class="p-6 sm:p-8 space-y-8">
+                        
+                        <div class="bg-amber-50/80 border-l-4 border-amber-500 text-amber-900 rounded-r-2xl p-4 text-xs sm:text-sm leading-relaxed no-print">
+                            <i class="fa-solid fa-lightbulb mr-1.5 text-amber-600"></i>
+                            <strong>Sugerencia del Coach:</strong> Completa esta fase después de haber generado el <strong>Prompt 1 (Análisis Inicial)</strong> para construir tus metas sobre una base firme de claridad.
+                        </div>
+
+                        <div>
+                            <h4 class="text-xs font-bold text-emerald-700 uppercase tracking-widest mb-4 flex items-center gap-2 pb-2 border-b border-slate-100">
+                                <i class="fa-solid fa-bullseye"></i> Metas y Objetivos
+                            </h4>
+                            <div class="space-y-6">
+                                <div class="question-block" data-qid="q3_1">
+                                    <label for="q3_1" class="block text-sm font-semibold text-slate-800 mb-1.5">1. ¿Qué metas a corto plazo (3-6 meses) establecerás para vivir y validar tu Propósito?</label>
+                                    <textarea id="q3_1" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q3_1">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q3_1">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="question-block" data-qid="q3_2">
+                                    <label for="q3_2" class="block text-sm font-semibold text-slate-800 mb-1.5">2. ¿Qué objetivos a mediano plazo (1-2 años) te gustaría alcanzar en relación con tus pasiones y talentos?</label>
+                                    <textarea id="q3_2" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q3_2">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q3_2">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-xs font-bold text-emerald-700 uppercase tracking-widest mb-4 flex items-center gap-2 pb-2 border-b border-slate-100">
+                                <i class="fa-solid fa-list-check"></i> Recursos, Obstáculos y Seguimiento
+                            </h4>
+                            <div class="space-y-6">
+                                <div class="question-block" data-qid="q3_3">
+                                    <label for="q3_3" class="block text-sm font-semibold text-slate-800 mb-1.5">3. ¿Qué recursos (mentoría, cursos, libros, herramientas) necesitas para avanzar hacia tus metas?</label>
+                                    <textarea id="q3_3" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q3_3">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q3_3">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="question-block" data-qid="q3_4">
+                                    <label for="q3_4" class="block text-sm font-semibold text-slate-800 mb-1.5">4. ¿Qué obstáculos internos o externos prevés en tu camino y cómo planeas superarlos?</label>
+                                    <textarea id="q3_4" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q3_4">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q3_4">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="question-block" data-qid="q3_5">
+                                    <label for="q3_5" class="block text-sm font-semibold text-slate-800 mb-1.5">5. ¿Cómo medirás de forma concreta tu progreso hacia tus objetivos?</label>
+                                    <textarea id="q3_5" rows="3" placeholder="Escribe o graba tu respuesta aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                                    <div class="flex items-center justify-between mt-1.5 no-print">
+                                        <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="q3_5">
+                                            <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                        </button>
+                                        <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-q3_5">
+                                            <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                            <span>Escuchando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- FASE DE SÍNTESIS, ANÁLISIS IA & TARJETA VISUAL -->
+            <div class="accordion-item glass-card rounded-2xl overflow-hidden border border-emerald-400 shadow-md transition-all duration-300">
+                <button class="accordion-header w-full px-6 py-4 text-left flex justify-between items-center bg-emerald-50/90 hover:bg-emerald-100/80 transition-colors focus:outline-none" data-accordion="analisis">
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-600 text-white font-bold text-sm shadow-md">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </span>
+                        <div>
+                            <span class="font-bold text-slate-900 text-base sm:text-lg block">Síntesis de Propósito, Diagnóstico IA & Tarjeta Resumen</span>
+                            <span class="text-xs text-emerald-800 font-medium">Genera los Prompts de Coaching, descarga tu Tarjeta Visual o envía al Coach</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down text-emerald-700 transition-transform duration-300"></i>
+                </button>
+                <div class="accordion-content bg-white" id="analisis">
+                    <div class="p-6 sm:p-8 space-y-6">
+                        
+                        <div class="question-block" data-qid="sintesis">
+                            <label for="sintesis" class="block text-sm font-bold text-slate-800 mb-1">
+                                <i class="fa-solid fa-feather text-emerald-600 mr-1.5"></i> Tu propia síntesis de Propósito y Elemento:
+                            </label>
+                            <p class="text-xs text-slate-500 font-light mb-2">Basándote en tus respuestas anteriores, resume en tus propias palabras cuál sientes que es tu Propósito y tu Elemento.</p>
+                            <textarea id="sintesis" rows="3" placeholder="Escribe o graba tu propia síntesis aquí..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50"></textarea>
+                            <div class="flex items-center justify-between mt-1.5 no-print">
+                                <button type="button" class="btn-mic text-xs text-slate-700 font-medium px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition-all border border-slate-200" data-target="sintesis">
+                                    <i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>
+                                </button>
+                                <div class="recording-indicator hidden items-center gap-2 text-xs text-red-600 font-semibold" id="recording-sintesis">
+                                    <span class="flex gap-1 items-end h-4"><span class="w-1 bg-red-500 rounded-full wave-bar"></span><span class="w-1 bg-red-500 rounded-full wave-bar"></span></span>
+                                    <span>Escuchando...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-block" data-qid="aiReceivedAnalysis">
+                            <label for="aiReceivedAnalysis" class="block text-sm font-bold text-slate-800 mb-1">
+                                <i class="fa-solid fa-brain text-teal-600 mr-1.5"></i> Diagnóstico Recibido de la IA / Notas de Mentoría:
+                            </label>
+                            <p class="text-xs text-slate-500 font-light mb-2">Después de usar el botón "Exportar para Análisis Inicial (Prompt 1)" en la IA, pega aquí el diagnóstico recibido para conservarlo en la ficha del cliente y auditar el plan en el Prompt 2.</p>
+                            <textarea id="aiReceivedAnalysis" rows="4" placeholder="Pega aquí el análisis de la IA o las notas clave de la sesión..." class="w-full rounded-xl border border-slate-200 p-3.5 text-sm bg-slate-50/50 font-mono text-xs"></textarea>
+                        </div>
+
+                        <!-- Botones de Acción para Prompts -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-slate-100 no-print">
+                            <div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-50/80 to-slate-50 border border-emerald-200 flex flex-col justify-between shadow-sm">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1.5">
+                                        <span class="w-6 h-6 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center">1</span>
+                                        <h5 class="text-sm font-bold text-slate-900">Exportar para Análisis Inicial</h5>
+                                    </div>
+                                    <p class="text-xs text-slate-600 font-light mb-3">
+                                        Compila las Fases 1 y 2 en un prompt de Coaching Vocacional para descubrir patrones, talentos innatos y caminos de propósito.
+                                    </p>
+                                </div>
+                                <button id="exportInitialAnalysisBtn" class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs sm:text-sm shadow transition-all flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> Exportar para Análisis Inicial (Prompt 1)
+                                </button>
+                            </div>
+
+                            <div class="p-4 rounded-2xl bg-gradient-to-br from-teal-50/80 to-slate-50 border border-teal-200 flex flex-col justify-between shadow-sm">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1.5">
+                                        <span class="w-6 h-6 rounded-full bg-teal-700 text-white font-bold text-xs flex items-center justify-center">2</span>
+                                        <h5 class="text-sm font-bold text-slate-900">Exportar para Feedback de Planes</h5>
+                                    </div>
+                                    <p class="text-xs text-slate-600 font-light mb-3">
+                                        Evalúa las metas de Fase 3 junto al diagnóstico previo para blindar la mentalidad y definir el primer paso accionable.
+                                    </p>
+                                </div>
+                                <button id="exportPlanFeedbackBtn" class="w-full py-2.5 px-4 bg-teal-700 hover:bg-teal-800 text-white rounded-xl font-bold text-xs sm:text-sm shadow transition-all flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-tasks"></i> Exportar para Feedback de Planes (Prompt 2)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Panel de Salida de Prompt -->
+                        <div id="exportArea" class="hidden mt-6 pt-6 border-t border-slate-200 no-print">
+                            <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                                    <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">Prompt Generado (Copiado automáticamente)</span>
+                                </div>
+                                
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <button id="copyExportBtn" class="text-xs font-bold px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl flex items-center gap-1.5 shadow-sm transition-all">
+                                        <i class="fa-solid fa-copy"></i> <span>Copiar al Portapapeles</span>
+                                    </button>
+                                    <button id="downloadTxtBtn" class="text-xs font-semibold px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl flex items-center gap-1.5 border border-slate-200 transition-all">
+                                        <i class="fa-solid fa-download"></i> <span>Descargar .TXT</span>
+                                    </button>
+                                    <button id="shareWhatsappBtn" class="text-xs font-bold px-3.5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl flex items-center gap-1.5 shadow-sm transition-all">
+                                        <i class="fa-brands fa-whatsapp"></i> <span>Enviar al Coach Juan Daniel</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <textarea id="exportTextArea" class="w-full h-72 rounded-2xl border border-slate-800 p-4 font-mono text-xs bg-slate-950 text-emerald-400 focus:ring-0 leading-relaxed shadow-inner" readonly></textarea>
+                            <p class="text-[11px] text-slate-500 font-light mt-2 text-center">
+                                💡 Abre <a href="https://chatgpt.com" target="_blank" class="text-emerald-700 underline font-semibold">ChatGPT</a>, <a href="https://gemini.google.com" target="_blank" class="text-emerald-700 underline font-semibold">Google Gemini</a> o <a href="https://claude.ai" target="_blank" class="text-emerald-700 underline font-semibold">Claude</a> y pega este texto.
+                            </p>
+                        </div>
+
+                        <!-- GENERADOR DE TARJETA DE IDENTIDAD DESCARGABLE (PNG) -->
+                        <div class="pt-6 border-t border-slate-200 no-print">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                                        <i class="fa-solid fa-id-card-clip text-emerald-600"></i> Tarjeta Visual "Mi Propósito" (Descargable en Imagen PNG)
+                                    </h4>
+                                    <p class="text-xs text-slate-500 font-light">Crea una tarjeta resumen de lujo con tus talentos, pasiones y propósito con el sello de Coach Juan Daniel.</p>
+                                </div>
+                                <button id="generateCardBtn" type="button" class="px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 flex-shrink-0">
+                                    <i class="fa-solid fa-image"></i> Generar y Descargar Tarjeta PNG
+                                </button>
+                            </div>
+                            <div id="cardPreviewContainer" class="hidden flex-col items-center gap-3 p-4 rounded-2xl bg-slate-100 border border-slate-200">
+                                <canvas id="identityCardCanvas" width="1080" height="1350" class="w-full max-w-sm rounded-xl shadow-lg border border-slate-300"></canvas>
+                                <p class="text-[11px] text-slate-500">La imagen se ha descargado automáticamente. Ideal para conservar en el móvil o compartir en Historias.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Botones de Utilidad Inferiores -->
+        <div class="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-white/70 border border-slate-200/80 shadow-sm no-print">
+            <button id="clearAllBtn" class="text-xs text-red-600 hover:text-red-700 hover:bg-red-50 font-semibold px-4 py-2.5 rounded-xl border border-red-200 transition-all flex items-center gap-2">
+                <i class="fa-solid fa-trash-can"></i> Limpiar respuestas en pantalla
+            </button>
+            <div class="flex flex-wrap items-center gap-2">
+                <button id="shareFullWhatsappBtn" type="button" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-sm"></i> Enviar Diagnóstico a Coach Juan Daniel
+                </button>
+                <button onclick="window.print()" class="text-xs bg-slate-800 hover:bg-slate-900 text-white font-semibold px-4 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-file-pdf"></i> Guardar Reporte PDF / Imprimir Ficha
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-400 text-xs mt-10 pb-6 border-t border-slate-200/60 pt-6 font-light">
+            <p>© 2026 - <strong>Coach Juan Daniel | Mentoría & Propósito</strong> • Todos los derechos reservados.</p>
+        </footer>
+
+    </div>
+
+    <!-- Contenedor Toast Flotante -->
+    <div id="toast-container" aria-live="polite"></div>
+
+    <!-- Plantillas de Prompts Originales -->
+    <div id="promptsReference" class="hidden">
+        <span id="prompt1-text-ref">Rol: Eres un coach experto en desarrollo personal, propósito de vida y orientación vocacional, trabajando en sinergia con la metodología de mentoría de Coach Juan Daniel y el concepto de "El Elemento" de Sir Ken Robinson. Tu objetivo es ayudar al participante/coachee a descubrir su "Propósito y Elemento" (el punto de encuentro entre sus talentos naturales y sus pasiones profundas) a partir de las reflexiones que te proporcionaré. Actúa con empatía, perspicacia y un enfoque constructivo, estratégico y alentador.
+
+Contexto: Se han completado las Fases 1 (Reflexión sobre el Pasado y el Presente) y 2 (Exploración y Apertura a Nuevas Posibilidades) de la guía interactiva "Descubre tu Propósito". Ahora buscamos tu análisis experto para identificar patrones ocultos, talentos clave y caminos de desarrollo para trabajar en sesión.
+
+Tarea:
+1. Análisis Detallado de Patrones y Conexiones:
+   - Lee cuidadosamente todas las respuestas de la Fase 1 y Fase 2, así como la síntesis inicial.
+   - Identifica y señala temas recurrentes, palabras clave significativas, valores consistentemente mencionados y habilidades que emergen en diferentes contextos (infancia, experiencias de fluidez, reconocimiento de otros).
+   - Busca posibles contradicciones o bloqueos en las respuestas y explóralos con tacto.
+   - Conecta los recuerdos de la infancia y las experiencias de fluidez actuales con los intereses y valores declarados en la Fase 2. ¿Qué hilos conductores observas?
+
+2. Identificación de Talentos Naturales (Aptitudes):
+   - Basándote en lo que se le daba bien de niño/a, lo que otros reconocen y las tareas que realiza con facilidad, ¿cuáles son sus 3-5 talentos o fortalezas más destacados? Sé específico/a.
+
+3. Identificación de Pasiones (Intereses Profundos):
+   - Considerando las actividades en las que pierde la noción del tiempo, lo que le produce satisfacción profunda y los temas que le generan curiosidad, ¿cuáles son sus 2-4 áreas de pasión más genuinas y energizantes?
+
+4. Definición Preliminar de su "Propósito y Elemento":
+   - Con base en la intersección de los talentos y pasiones identificados, y considerando sus valores fundamentales y el impacto que desea dejar, ofrece una o dos formulaciones potentes de cuál es su "Propósito / Elemento".
+
+5. Sugerencia de Caminos y Áreas de Exploración (3-5 opciones):
+   - Propón entre 3 y 5 áreas profesionales, tipos de proyectos, negocios o roles fuertemente alineados con su perfil.
+   - Para cada sugerencia, explica brevemente por qué encaja, qué talentos pone en juego y qué primeros pasos concretos puede dar.
+
+6. Preguntas Poderosas de Coaching (2-3 preguntas):
+   - Formula 2 o 3 preguntas abiertas y profundas para trabajar en la sesión de mentoría antes de pasar a la Fase 3 de planificación.
+
+Aquí están las respuestas:</span>
+
+        <span id="prompt2-text-ref">Rol: Eres un coach estratégico de alto rendimiento y mentor de desarrollo profesional, trabajando bajo el enfoque de Coach Juan Daniel. Tu especialidad es traducir el autoconocimiento y el propósito en planes de acción concretos, realistas y blindados mentalmente.
+
+Contexto: Anteriormente realizamos la reflexión profunda (Fases 1 y 2) para descubrir el Propósito y Elemento, recibimos un análisis inicial de la IA y completamos la Fase 3 (Planificación y Acción), definiendo metas a corto y mediano plazo, recursos necesarios, obstáculos previstos y métricas de progreso.
+
+Tarea Principal: Revisión Crítica y Constructiva del Plan de Acción (Fase 3)
+Analiza las respuestas de la Fase 3 a la luz de todo el contexto previo y proporciona feedback detallado sobre:
+
+1. Alineación con el Propósito y Elemento:
+   - ¿Las metas a corto y mediano plazo están genuinamente conectadas con los talentos, pasiones y valores de las fases anteriores?
+
+2. Claridad y Viabilidad de las Metas (Enfoque SMART):
+   - Evalúa las metas a corto (3-6 meses) y mediano plazo (1-2 años). Ofrece reformulaciones concretas para que sean 100% accionables y medibles.
+
+3. Adecuación de los Recursos Identificados:
+   - ¿Qué otros recursos clave, hábitos o herramientas apalancadas en IA podrían acelerar sus primeros pasos?
+
+4. Blindaje Mental y Superación de Obstáculos:
+   - ¿Qué bloqueos internos (miedo, postergación, síndrome del impostor) o externos podrían surgir y qué estrategias prácticas recomiendas para blindar su mentalidad?
+
+5. Efectividad del Sistema de Medición de Progreso:
+   - Sugiere 1 o 2 indicadores semanales para mantener el foco y la constancia.
+
+6. "Primer Paso Imparable" (Próximos 7 a 14 días):
+   - Propón una acción mínima viable, concreta e inmediata para ganar tracción esta misma semana.
+
+Aquí está toda la información completa:</span>
+    </div>
+
+    <!-- SCRIPT PRINCIPAL -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const STORAGE_KEY = 'descubreTuProposito_JD_respuestas_v5';
+            const SESSIONS_KEY = 'descubreTuProposito_JD_clientes_guardados';
+            const COACH_PHONE_KEY = 'descubreTuProposito_JD_whatsapp';
+
+            // Número oficial del Coach Juan Daniel (Argentina +54 9 3786 499958)
+            const DEFAULT_COACH_PHONE = '5493786499958';
+
+            const f1Ids = ['q1_1', 'q1_2', 'q1_3', 'q1_4', 'q1_5', 'q1_6', 'q1_7', 'q1_8'];
+            const f2Ids = ['q2_1', 'q2_2', 'q2_3', 'q2_4', 'q2_5', 'q2_6'];
+            const f3Ids = ['q3_1', 'q3_2', 'q3_3', 'q3_4', 'q3_5'];
+            const extraIds = ['sintesis', 'aiReceivedAnalysis'];
+            const allFieldIds = [...f1Ids, ...f2Ids, ...f3Ids, ...extraIds];
+
+            let recognition = null;
+            let isRecording = false;
+            let activeTargetTextarea = null;
+
+            // 1. Notificaciones Toast
+            function showToast(message, type = 'info', duration = 3000) {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                const bgMap = {
+                    success: 'bg-emerald-900 border-emerald-700 text-emerald-100',
+                    error: 'bg-red-900 border-red-700 text-red-100',
+                    info: 'bg-slate-900 border-slate-800 text-slate-100',
+                    brand: 'bg-teal-900 border-teal-700 text-teal-100'
+                };
+                const iconMap = {
+                    success: 'fa-circle-check text-emerald-400',
+                    error: 'fa-triangle-exclamation text-red-400',
+                    info: 'fa-circle-info text-sky-400',
+                    brand: 'fa-crown text-amber-400'
+                };
+                toast.className = `toast ${bgMap[type] || bgMap.info} px-4 py-3 rounded-xl shadow-2xl border text-xs sm:text-sm font-medium flex items-center gap-2.5`;
+                toast.innerHTML = `<i class="fa-solid ${iconMap[type] || iconMap.info}"></i> <span>${message}</span>`;
+                container.appendChild(toast);
+                requestAnimationFrame(() => toast.classList.add('show'));
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, duration);
+            }
+
+            // Configuración de WhatsApp del Coach
+            const coachConfigPanel = document.getElementById('coachConfigPanel');
+            const coachPhoneInput = document.getElementById('coachPhoneInput');
+
+            function getCoachPhone() {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('tel')) return urlParams.get('tel').replace(/\D/g, '');
+                return localStorage.getItem(COACH_PHONE_KEY) || DEFAULT_COACH_PHONE;
+            }
+
+            coachPhoneInput.value = getCoachPhone();
+
+            document.getElementById('toggleConfigBtn').addEventListener('click', () => {
+                coachConfigPanel.classList.toggle('hidden');
+            });
+
+            // Modo Oscuro
+            const darkModeToggleBtn = document.getElementById('darkModeToggleBtn');
+            const darkModeIcon = document.getElementById('darkModeIcon');
+            const darkModeText = document.getElementById('darkModeText');
+            const DARK_MODE_KEY = 'descubreTuProposito_JD_dark_mode';
+
+            function applyDarkMode(isDark) {
+                if (isDark) {
+                    document.body.classList.add('dark-mode');
+                    darkModeIcon.className = 'fa-solid fa-sun text-amber-400';
+                    darkModeText.textContent = 'Modo Claro';
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    darkModeIcon.className = 'fa-solid fa-moon text-slate-700';
+                    darkModeText.textContent = 'Modo Oscuro';
+                }
+            }
+
+            if (localStorage.getItem(DARK_MODE_KEY) === 'true') {
+                applyDarkMode(true);
+            }
+
+            darkModeToggleBtn.addEventListener('click', () => {
+                const isDarkNow = !document.body.classList.contains('dark-mode');
+                applyDarkMode(isDarkNow);
+                localStorage.setItem(DARK_MODE_KEY, isDarkNow ? 'true' : 'false');
+            });
+
+            document.getElementById('saveCoachPhoneBtn').addEventListener('click', () => {
+                const cleanPhone = coachPhoneInput.value.replace(/\D/g, '');
+                localStorage.setItem(COACH_PHONE_KEY, cleanPhone);
+                coachPhoneInput.value = cleanPhone;
+                coachConfigPanel.classList.add('hidden');
+                showToast('Número de WhatsApp del Coach guardado.', 'success', 2500);
+            });
+
+            // 2. Acordeones
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const contentId = header.dataset.accordion;
+                    const content = document.getElementById(contentId);
+                    const isCurrentlyActive = content.classList.contains('active');
+                    
+                    document.querySelectorAll('.accordion-content.active').forEach(activeContent => {
+                        if (activeContent !== content) {
+                            activeContent.classList.remove('active');
+                            const arrow = activeContent.previousElementSibling?.querySelector('.fa-chevron-down');
+                            if (arrow) arrow.style.transform = 'rotate(0deg)';
+                        }
+                    });
+
+                    if (isCurrentlyActive) {
+                        content.classList.remove('active');
+                        header.querySelector('.fa-chevron-down').style.transform = 'rotate(0deg)';
+                    } else {
+                        content.classList.add('active');
+                        header.querySelector('.fa-chevron-down').style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+
+            // 3. Motor de Reconocimiento de Voz Probado y Estable (Pausar / Continuar)
+            function checkSpeechRecognitionSupport() {
+                return 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
+            }
+
+            function initSpeechRecognition() {
+                const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!SpeechRecognitionAPI) return null;
+                
+                const instance = new SpeechRecognitionAPI();
+                instance.lang = 'es-ES';
+                instance.continuous = true;
+                instance.interimResults = false;
+
+                instance.onresult = (event) => {
+                    let finalTranscript = '';
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            finalTranscript += event.results[i][0].transcript;
+                        }
+                    }
+                    if (activeTargetTextarea && finalTranscript) {
+                        const currentVal = activeTargetTextarea.value.trim();
+                        activeTargetTextarea.value = currentVal.length > 0 
+                            ? currentVal + ' ' + finalTranscript.trim()
+                            : finalTranscript.trim();
+                        saveProgress();
+                        updateProgressCounters();
+                    }
+                };
+
+                instance.onerror = (event) => {
+                    if (event.error === 'not-allowed') {
+                        showToast('Permiso de micrófono denegado en el navegador.', 'error', 3500);
+                    }
+                    if (isRecording) stopRecordingUI();
+                };
+
+                instance.onend = () => {
+                    if (isRecording) stopRecordingUI();
+                };
+
+                return instance;
+            }
+
+            function stopRecordingUI() {
+                isRecording = false;
+                document.querySelectorAll('.btn-mic').forEach(btn => {
+                    btn.classList.remove('recording-active');
+                    const targetTa = document.getElementById(btn.dataset.target);
+                    const hasText = targetTa && targetTa.value.trim().length > 0;
+                    btn.innerHTML = hasText 
+                        ? '<i class="fa-solid fa-microphone"></i> <span>Continuar grabando</span>'
+                        : '<i class="fa-solid fa-microphone"></i> <span>Grabar respuesta</span>';
+                });
+                document.querySelectorAll('.recording-indicator').forEach(ind => {
+                    ind.classList.add('hidden');
+                    ind.classList.remove('flex');
+                });
+            }
+
+            document.querySelectorAll('.btn-mic').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (!checkSpeechRecognitionSupport()) {
+                        showToast('Tu navegador no soporta dictado por voz. Usa Chrome, Edge o Safari.', 'error', 4000);
+                        return;
+                    }
+                    
+                    const targetId = this.dataset.target;
+                    const textarea = document.getElementById(targetId);
+                    const indicator = document.getElementById(`recording-${targetId}`);
+
+                    if (isRecording) {
+                        if (recognition) recognition.stop();
+                        stopRecordingUI();
+                        showToast('Grabación pausada y guardada.', 'info', 1800);
+                    } else {
+                        activeTargetTextarea = textarea;
+                        recognition = initSpeechRecognition();
+                        if (!recognition) return;
+                        
+                        try {
+                            recognition.start();
+                            isRecording = true;
+                            this.classList.add('recording-active');
+                            this.innerHTML = '<i class="fa-solid fa-pause"></i> <span>Pausar / Detener</span>';
+                            if (indicator) {
+                                indicator.classList.remove('hidden');
+                                indicator.classList.add('flex');
+                            }
+                            showToast('Escuchando... habla con tranquilidad.', 'brand', 2000);
+                        } catch (err) {
+                            stopRecordingUI();
+                        }
+                    }
+                });
+            });
+
+            // 4. Autoguardado, Gestión de Clientes (Modo Consultorio) y Gamificación
+            const participantInput = document.getElementById('participantName');
+            let autosaveTimer = null;
+
+            function getFormData() {
+                const data = {
+                    participantName: participantInput.value.trim(),
+                    updatedAt: new Date().toLocaleString('es-AR')
+                };
+                allFieldIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) data[id] = el.value;
+                });
+                return data;
+            }
+
+            function setFormData(data) {
+                participantInput.value = data.participantName || '';
+                allFieldIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = data[id] || '';
+                });
+                updateProgressCounters();
+                stopRecordingUI();
+            }
+
+            function saveProgress() {
+                const data = getFormData();
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            }
+
+            function loadProgress() {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    try {
+                        setFormData(JSON.parse(raw));
+                    } catch (e) {}
+                }
+                renderSavedSessionsList();
+            }
+
+            document.querySelectorAll('textarea, #participantName').forEach(el => {
+                el.addEventListener('input', () => {
+                    clearTimeout(autosaveTimer);
+                    autosaveTimer = setTimeout(() => {
+                        saveProgress();
+                        updateProgressCounters();
+                        stopRecordingUI();
+                    }, 500);
+                });
+            });
+
+            function getSavedSessions() {
+                try {
+                    return JSON.parse(localStorage.getItem(SESSIONS_KEY) || '{}');
+                } catch (e) {
+                    return {};
+                }
+            }
+
+            function renderSavedSessionsList() {
+                const sessions = getSavedSessions();
+                const bar = document.getElementById('savedSessionsBar');
+                const select = document.getElementById('savedSessionsSelect');
+                const keys = Object.keys(sessions);
+
+                if (keys.length === 0) {
+                    bar.classList.add('hidden');
+                    return;
+                }
+                bar.classList.remove('hidden');
+                select.innerHTML = '<option value="">-- Seleccionar ficha guardada (' + keys.length + ') --</option>';
+                keys.forEach(k => {
+                    const opt = document.createElement('option');
+                    opt.value = k;
+                    opt.textContent = `${sessions[k].participantName || k} (${sessions[k].updatedAt || ''})`;
+                    select.appendChild(opt);
+                });
+            }
+
+            document.getElementById('saveSessionBtn').addEventListener('click', () => {
+                let name = participantInput.value.trim();
+                if (!name) {
+                    name = prompt('Ingresa el nombre del cliente / coachee para guardar su ficha:');
+                    if (!name) return;
+                    participantInput.value = name;
+                }
+                const sessions = getSavedSessions();
+                const sessionKey = name.toLowerCase().replace(/\s+/g, '_');
+                sessions[sessionKey] = getFormData();
+                localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
+                saveProgress();
+                renderSavedSessionsList();
+                showToast(`Ficha de "${name}" guardada en el consultorio.`, 'success', 2500);
+            });
+
+            document.getElementById('newSessionBtn').addEventListener('click', () => {
+                if (confirm('¿Abrir una ficha en limpio para un nuevo cliente? (Si aún no guardaste al cliente actual, toca Cancelar y luego "Guardar")')) {
+                    setFormData({});
+                    localStorage.removeItem(STORAGE_KEY);
+                    document.getElementById('exportArea').classList.add('hidden');
+                    document.getElementById('cardPreviewContainer').classList.add('hidden');
+                    showToast('Ficha limpia lista para el nuevo cliente.', 'info', 2000);
+                }
+            });
+
+            // Exportar Ficha Portátil (.json) para enviar al Coach o pasar a otra computadora
+            document.getElementById('exportJsonBtn').addEventListener('click', () => {
+                const data = getFormData();
+                const nameSlug = (data.participantName || 'Cliente').replace(/\s+/g, '-');
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Ficha-Proposito-${nameSlug}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('Archivo de Ficha descargado. Puedes enviarlo por WhatsApp o abrirlo en otra PC.', 'success', 3500);
+            });
+
+            // Función inteligente para interpretar texto libre, reportes exportados o JSON
+            function processImportedContent(rawContent, sourceFileName = '') {
+                const trimmed = (rawContent || '').trim();
+                if (!trimmed) {
+                    showToast('El contenido está vacío.', 'error', 2500);
+                    return;
+                }
+
+                // 1. Intentar como JSON directo
+                if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+                    try {
+                        const importedData = JSON.parse(trimmed);
+                        setFormData(importedData);
+                        saveProgress();
+                        if (importedData.participantName) {
+                            const sessions = getSavedSessions();
+                            const sessionKey = importedData.participantName.toLowerCase().replace(/\s+/g, '_');
+                            sessions[sessionKey] = importedData;
+                            localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
+                            renderSavedSessionsList();
+                        }
+                        showToast(`¡Ficha de "${importedData.participantName || 'Cliente'}" cargada con todas sus respuestas!`, 'success', 3500);
+                        return;
+                    } catch (e) {}
+                }
+
+                // 2. Intentar extraer campos si es un TXT/PDF de nuestro propio formato exportado
+                const extracted = {
+                    participantName: participantInput.value.trim()
+                };
+                const nameMatch = trimmed.match(/(?:CLIENTE \/ COACHEE|PARTICIPANTE|Nombre):\s*(.+)/i);
+                if (nameMatch && nameMatch[1]) {
+                    extracted.participantName = nameMatch[1].trim();
+                } else if (sourceFileName && !extracted.participantName) {
+                    extracted.participantName = sourceFileName.replace(/\.(pdf|docx|txt|json|md)$/i, '').replace(/[-_]/g, ' ');
+                }
+
+                const patterns = [
+                    { id: 'q1_1', reg: /1\.\s*(?:Actividades que disfrutaba|Actividades de niño\/a|¿Qué actividades disfrutabas)[^:\n]*:\s*([\s\S]*?)(?=\n2\.\s*|$)/i },
+                    { id: 'q1_2', reg: /2\.\s*(?:Habilidades o destrezas|Habilidades destacadas|¿Qué habilidades o destrezas)[^:\n]*:\s*([\s\S]*?)(?=\n3\.\s*|$)/i },
+                    { id: 'q1_3', reg: /3\.\s*(?:Sueños o aspiraciones|Sueños de infancia|Sueños e ilusiones|¿Qué sueños o aspiraciones)[^:\n]*:\s*([\s\S]*?)(?=\n(?:###|Experiencias de Fluidez|4\.)|$)/i },
+                    { id: 'q1_4', reg: /(?:4\.|1\.)\s*(?:Actividades actuales donde pierd|Tareas actuales donde pierde|¿En qué actividades o tareas actuales)[^:\n]*:\s*([\s\S]*?)(?=\n(?:5\.|2\.)\s*|$)/i },
+                    { id: 'q1_5', reg: /(?:5\.|2\.)\s*(?:Actividades que me producen|Actividades que producen|Actividades de satisfacción|¿Qué actividades te producen)[^:\n]*:\s*([\s\S]*?)(?=\n(?:###|Fortalezas y Debilidades|6\.|1\.)|$)/i },
+                    { id: 'q1_6', reg: /(?:6\.|1\.)\s*(?:Habilidades o talentos|Habilidades\/talentos reconocidos|Talentos reconocidos|¿Qué habilidades o talentos)[^:\n]*:\s*([\s\S]*?)(?=\n(?:7\.|2\.)\s*|$)/i },
+                    { id: 'q1_7', reg: /(?:7\.|2\.)\s*(?:Tareas que realizo|Tareas realizadas con facilidad|Habilidades fáciles|¿Qué tareas o actividades realizas)[^:\n]*:\s*([\s\S]*?)(?=\n(?:8\.|3\.)\s*|$)/i },
+                    { id: 'q1_8', reg: /(?:8\.|3\.)\s*(?:Áreas donde siento|Áreas de limitaciones|Limitaciones o áreas|¿En qué áreas sientes)[^:\n]*:\s*([\s\S]*?)(?=\n(?:---|===|## FASE 2|FASE 2)|$)/i },
+                    { id: 'q2_1', reg: /FASE 2[\s\S]*?1\.\s*(?:Temas o actividades|Temas\/actividades de curiosidad|Temas\/industrias|¿Qué temas)[^:\n]*:\s*([\s\S]*?)(?=\n2\.\s*|$)/i },
+                    { id: 'q2_2', reg: /FASE 2[\s\S]*?2\.\s*(?:Contenido que consumo|Contenidos consumidos|Contenidos|¿Qué tipo de contenido)[^:\n]*:\s*([\s\S]*?)(?=\n(?:###|Valores y Propósito|3\.|1\.)|$)/i },
+                    { id: 'q2_3', reg: /(?:Valores y Propósito[\s\S]*?1\.|FASE 2[\s\S]*?3\.)\s*(?:Valores fundamentales|¿Qué valores)[^:\n]*:\s*([\s\S]*?)(?=\n(?:4\.|2\.)\s*|$)/i },
+                    { id: 'q2_4', reg: /(?:Valores y Propósito[\s\S]*?2\.|FASE 2[\s\S]*?4\.)\s*(?:Impacto o huella|Impacto deseado|Huella o impacto|¿Qué tipo de impacto)[^:\n]*:\s*([\s\S]*?)(?=\n(?:###|Exploración de|5\.|1\.)|$)/i },
+                    { id: 'q2_5', reg: /(?:Exploración de Posibilidades[\s\S]*?1\.|FASE 2[\s\S]*?5\.)\s*(?:Carreras, profesiones|Profesiones\/carreras|¿Qué carreras)[^:\n]*:\s*([\s\S]*?)(?=\n(?:6\.|2\.)\s*|$)/i },
+                    { id: 'q2_6', reg: /(?:Exploración de Posibilidades[\s\S]*?2\.|FASE 2[\s\S]*?6\.)\s*(?:Personas que admiro|Personas admiradas|¿Qué personas admiras)[^:\n]*:\s*([\s\S]*?)(?=\n(?:---|===|MI PROPIA|SÍNTESIS)|$)/i },
+                    { id: 'sintesis', reg: /(?:MI PROPIA SÍNTESIS|SÍNTESIS DE PROPÓSITO)[^:\n]*:?\s*([\s\S]*?)(?=\n(?:---|===|ANÁLISIS PREVIO|DIAGNÓSTICO PREVIO|FASE 3)|$)/i }
+                ];
+
+                let matchedCount = 0;
+                patterns.forEach(p => {
+                    const m = trimmed.match(p.reg);
+                    if (m && m[1]) {
+                        const val = m[1].trim();
+                        if (val && val !== 'Sin respuesta.') {
+                            extracted[p.id] = val;
+                            matchedCount++;
+                        }
+                    }
+                });
+
+                if (matchedCount >= 2) {
+                    const currentData = getFormData();
+                    const merged = { ...currentData, ...extracted };
+                    setFormData(merged);
+                    saveProgress();
+                    showToast(`¡Se detectaron y rellenaron ${matchedCount} respuestas automáticamente!`, 'success', 3500);
+                } else {
+                    // 3. Si es un análisis de IA libre o un PDF de devolución, lo guardamos en la casilla de Diagnóstico / Notas y abrimos esa sección
+                    if (extracted.participantName && !participantInput.value.trim()) {
+                        participantInput.value = extracted.participantName;
+                    }
+                    const aiBox = document.getElementById('aiReceivedAnalysis');
+                    const prevVal = aiBox.value.trim();
+                    aiBox.value = prevVal ? (prevVal + "\n\n=== DOCUMENTO IMPORTADO ===\n" + trimmed) : trimmed;
+                    saveProgress();
+
+                    // Abrir el acordeón de Análisis para que el usuario vea dónde quedó cargado su documento
+                    const analisisContent = document.getElementById('analisis');
+                    if (analisisContent && !analisisContent.classList.contains('active')) {
+                        analisisContent.classList.add('active');
+                    }
+                    aiBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    showToast('Documento cargado en la sección "Diagnóstico Recibido / Notas de Mentoría".', 'brand', 4000);
+                }
+            }
+
+            // Extraer texto de un archivo PDF usando PDF.js
+            async function extractTextFromPdf(file) {
+                if (!window.pdfjsLib) {
+                    throw new Error('Librería PDF no disponible.');
+                }
+                window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                let fullText = '';
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const content = await page.getTextContent();
+                    const strings = content.items.map(item => item.str);
+                    fullText += strings.join(' ') + '\n\n';
+                }
+                return fullText;
+            }
+
+            // Extraer texto de un archivo Word (.docx) usando Mammoth.js
+            async function extractTextFromDocx(file) {
+                if (!window.mammoth) {
+                    throw new Error('Librería Word no disponible.');
+                }
+                const arrayBuffer = await file.arrayBuffer();
+                const result = await window.mammoth.extractRawText({ arrayBuffer });
+                return result.value;
+            }
+
+            // Importar / Subir Archivo (soporta .json, .txt, .md, .pdf, .docx)
+            document.getElementById('importJsonInput').addEventListener('change', async function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const ext = file.name.split('.').pop().toLowerCase();
+
+                try {
+                    if (ext === 'pdf') {
+                        showToast('Leyendo documento PDF...', 'info', 2000);
+                        const pdfText = await extractTextFromPdf(file);
+                        processImportedContent(pdfText, file.name);
+                    } else if (ext === 'docx') {
+                        showToast('Leyendo documento Word...', 'info', 2000);
+                        const docxText = await extractTextFromDocx(file);
+                        processImportedContent(docxText, file.name);
+                    } else {
+                        const reader = new FileReader();
+                        reader.onload = function(evt) {
+                            processImportedContent(evt.target.result, file.name);
+                        };
+                        reader.readAsText(file);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showToast('No se pudo leer el archivo. Prueba copiando y pegando su texto con el botón "Pegar Texto".', 'error', 4000);
+                }
+                e.target.value = '';
+            });
+
+            // Eventos del Modal para Pegar Texto Libre
+            const pasteTextModal = document.getElementById('pasteTextModal');
+            const rawPasteTextarea = document.getElementById('rawPasteTextarea');
+
+            document.getElementById('openPasteModalBtn').addEventListener('click', () => {
+                pasteTextModal.classList.toggle('hidden');
+                if (!pasteTextModal.classList.contains('hidden')) {
+                    rawPasteTextarea.focus();
+                }
+            });
+
+            document.getElementById('closePasteModalBtn').addEventListener('click', () => {
+                pasteTextModal.classList.add('hidden');
+            });
+
+            document.getElementById('processPasteBtn').addEventListener('click', () => {
+                const text = rawPasteTextarea.value;
+                processImportedContent(text);
+                rawPasteTextarea.value = '';
+                pasteTextModal.classList.add('hidden');
+            });
+
+            document.getElementById('savedSessionsSelect').addEventListener('change', function() {
+                const key = this.value;
+                if (!key) return;
+                const sessions = getSavedSessions();
+                if (sessions[key]) {
+                    setFormData(sessions[key]);
+                    saveProgress();
+                    showToast(`Ficha de "${sessions[key].participantName}" cargada.`, 'brand', 2000);
+                }
+            });
+
+            document.getElementById('deleteSessionBtn').addEventListener('click', () => {
+                const select = document.getElementById('savedSessionsSelect');
+                const key = select.value;
+                if (!key) {
+                    showToast('Selecciona primero una ficha de la lista.', 'info', 2000);
+                    return;
+                }
+                if (confirm('¿Eliminar esta ficha del historial de clientes?')) {
+                    const sessions = getSavedSessions();
+                    delete sessions[key];
+                    localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
+                    renderSavedSessionsList();
+                    showToast('Ficha eliminada del historial.', 'info', 2000);
+                }
+            });
+
+            // Contadores e Insignias Gamificadas
+            let medalState = { m1: false, m2: false, m3: false };
+
+            function updateProgressCounters() {
+                const countAnswered = (arr) => arr.filter(id => {
+                    const el = document.getElementById(id);
+                    return el && el.value.trim().length > 2;
+                }).length;
+
+                const c1 = countAnswered(f1Ids);
+                const c2 = countAnswered(f2Ids);
+                const c3 = countAnswered(f3Ids);
+
+                const b1 = document.getElementById('badge-fase1');
+                const b2 = document.getElementById('badge-fase2');
+                const b3 = document.getElementById('badge-fase3');
+
+                b1.textContent = `${c1}/8`;
+                b2.textContent = `${c2}/6`;
+                b3.textContent = `${c3}/5`;
+
+                b1.className = `text-xs font-semibold px-2.5 py-1 rounded-full ${c1 === 8 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-slate-200/70 text-slate-600'}`;
+                b2.className = `text-xs font-semibold px-2.5 py-1 rounded-full ${c2 === 6 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-slate-200/70 text-slate-600'}`;
+                b3.className = `text-xs font-semibold px-2.5 py-1 rounded-full ${c3 === 5 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-slate-200/70 text-slate-600'}`;
+
+                const m1El = document.getElementById('medal-1');
+                const m2El = document.getElementById('medal-2');
+                const m3El = document.getElementById('medal-3');
+
+                if (c1 === 8) {
+                    m1El.classList.add('badge-unlocked');
+                    if (!medalState.m1) { medalState.m1 = true; showToast('🌱 ¡Etapa 1 Completa: Raíces y Talentos Descubiertos!', 'brand', 3000); }
+                } else { m1El.classList.remove('badge-unlocked'); medalState.m1 = false; }
+
+                if (c2 === 6) {
+                    m2El.classList.add('badge-unlocked');
+                    if (!medalState.m2) { medalState.m2 = true; showToast('🧭 ¡Etapa 2 Completa: Visión de Propósito Clara!', 'brand', 3000); }
+                } else { m2El.classList.remove('badge-unlocked'); medalState.m2 = false; }
+
+                if (c3 === 5) {
+                    m3El.classList.add('badge-unlocked');
+                    if (!medalState.m3) { medalState.m3 = true; showToast('🏆 ¡Etapa 3 Completa: Plan de Acción Imparable!', 'brand', 3000); }
+                } else { m3El.classList.remove('badge-unlocked'); medalState.m3 = false; }
+
+                const total = c1 + c2 + c3;
+                const percent = Math.round((total / 19) * 100);
+                document.getElementById('topProgressBar').style.width = `${percent}%`;
+                document.getElementById('progressBadge').textContent = `${percent}% completado`;
+            }
+
+            // 5. Compilación de Respuestas y Prompts
+            function getVal(id) {
+                const el = document.getElementById(id);
+                return el && el.value.trim() ? el.value.trim() : 'Sin respuesta.';
+            }
+
+            function buildCompiledAnswers(includePhase3 = false) {
+                const name = participantInput.value.trim();
+                let txt = "";
+                if (name) {
+                    txt += `CLIENTE / COACHEE: ${name}\n`;
+                    txt += `MENTORÍA: Coach Juan Daniel\n`;
+                    txt += `FECHA: ${new Date().toLocaleDateString('es-AR')}\n\n`;
+                }
+                txt += "--- FASE 1: REFLEXIÓN SOBRE EL PASADO Y EL PRESENTE ---\n\n";
+                txt += "Recuerdos de la Infancia:\n";
+                txt += "1. Actividades que disfrutaba tanto de niño/a que perdía la noción del tiempo:\n" + getVal('q1_1') + "\n\n";
+                txt += "2. Habilidades o destrezas que me destacaban de niño/a:\n" + getVal('q1_2') + "\n\n";
+                txt += "3. Sueños o aspiraciones de la infancia:\n" + getVal('q1_3') + "\n\n";
+                txt += "Experiencias de Fluidez:\n";
+                txt += "4. Actividades actuales donde pierdo la noción del tiempo:\n" + getVal('q1_4') + "\n\n";
+                txt += "5. Actividades que me producen satisfacción profunda:\n" + getVal('q1_5') + "\n\n";
+                txt += "Fortalezas y Debilidades:\n";
+                txt += "6. Habilidades o talentos que me han reconocido otras personas:\n" + getVal('q1_6') + "\n\n";
+                txt += "7. Tareas que realizo con facilidad mientras otros se esfuerzan:\n" + getVal('q1_7') + "\n\n";
+                txt += "8. Áreas donde siento limitaciones o dificultades:\n" + getVal('q1_8') + "\n\n";
+
+                txt += "--- FASE 2: EXPLORACIÓN Y APERTURA A POSIBILIDADES ---\n\n";
+                txt += "1. Temas o actividades que me generan curiosidad y entusiasmo:\n" + getVal('q2_1') + "\n\n";
+                txt += "2. Contenido que consumo por gusto en mi tiempo libre:\n" + getVal('q2_2') + "\n\n";
+                txt += "3. Valores fundamentales en la vida y el trabajo:\n" + getVal('q2_3') + "\n\n";
+                txt += "4. Impacto o huella que me gustaría dejar:\n" + getVal('q2_4') + "\n\n";
+                txt += "5. Carreras, profesiones o proyectos considerados:\n" + getVal('q2_5') + "\n\n";
+                txt += "6. Personas que admiro y qué me inspira de ellas:\n" + getVal('q2_6') + "\n\n";
+
+                const sintesisVal = getVal('sintesis');
+                if (sintesisVal !== 'Sin respuesta.') {
+                    txt += "--- SÍNTESIS DE PROPÓSITO Y ELEMENTO ---\n" + sintesisVal + "\n\n";
+                }
+
+                if (includePhase3) {
+                    txt += "--- DIAGNÓSTICO PREVIO / NOTAS DE MENTORÍA ---\n" + getVal('aiReceivedAnalysis') + "\n\n";
+                    txt += "--- FASE 3: PLANIFICACIÓN Y ACCIÓN ESTRATÉGICA ---\n\n";
+                    txt += "1. Metas a corto plazo (3-6 meses):\n" + getVal('q3_1') + "\n\n";
+                    txt += "2. Objetivos a mediano plazo (1-2 años):\n" + getVal('q3_2') + "\n\n";
+                    txt += "3. Recursos necesarios:\n" + getVal('q3_3') + "\n\n";
+                    txt += "4. Obstáculos previstos y cómo superarlos:\n" + getVal('q3_4') + "\n\n";
+                    txt += "5. Cómo mediré mi progreso:\n" + getVal('q3_5') + "\n\n";
+                }
+
+                return txt;
+            }
+
+            function displayExportResult(text) {
+                const area = document.getElementById('exportArea');
+                const ta = document.getElementById('exportTextArea');
+                ta.value = text;
+                area.classList.remove('hidden');
+                area.scrollIntoView({ behavior: 'smooth' });
+
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('¡Prompt copiado al portapapeles! Pégalo en tu IA.', 'success', 3500);
+                }).catch(() => {
+                    showToast('Prompt generado. Toca "Copiar al Portapapeles".', 'info', 3000);
+                });
+            }
+
+            document.getElementById('exportInitialAnalysisBtn').addEventListener('click', () => {
+                const prompt1 = document.getElementById('prompt1-text-ref').textContent;
+                displayExportResult(prompt1 + "\n\n" + buildCompiledAnswers(false));
+            });
+
+            document.getElementById('exportPlanFeedbackBtn').addEventListener('click', () => {
+                const prompt2 = document.getElementById('prompt2-text-ref').textContent;
+                displayExportResult(prompt2 + "\n\n" + buildCompiledAnswers(true));
+            });
+
+            document.getElementById('copyExportBtn').addEventListener('click', () => {
+                const ta = document.getElementById('exportTextArea');
+                if (!ta.value.trim()) return;
+                navigator.clipboard.writeText(ta.value).then(() => {
+                    showToast('Copiado al portapapeles.', 'success', 2000);
+                });
+            });
+
+            document.getElementById('downloadTxtBtn').addEventListener('click', () => {
+                const text = document.getElementById('exportTextArea').value || buildCompiledAnswers(true);
+                const nameSlug = (participantInput.value.trim() || 'Cliente').replace(/\s+/g, '-');
+                const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Descubre-tu-Proposito-${nameSlug}-${new Date().toISOString().slice(0,10)}.txt`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('Ficha .TXT descargada.', 'success', 2000);
+            });
+
+            function sendToCoachWhatsapp() {
+                const phone = getCoachPhone();
+                const name = participantInput.value.trim() || 'Cliente';
+                const sintesis = getVal('sintesis');
+                const talentos = getVal('q1_6');
+                const pasiones = getVal('q2_1');
+                const valores = getVal('q2_3');
+                const meta = getVal('q3_1');
+                const msg = encodeURIComponent(
+                    `Hola Coach Juan Daniel! He completado mi guía *Descubre tu Propósito*:\n\n` +
+                    `👤 *Nombre:* ${name}\n` +
+                    `✨ *Talentos Clave:* ${talentos}\n` +
+                    `🔥 *Pasiones:* ${pasiones}\n` +
+                    `💎 *Valores:* ${valores}\n` +
+                    `🧭 *Mi Síntesis de Propósito:* ${sintesis}\n` +
+                    `🎯 *Meta a Corto Plazo:* ${meta}\n\n` +
+                    `¡Listo para trabajarlo en nuestra sesión de mentoría!`
+                );
+                const baseUrl = phone ? `https://wa.me/${phone}` : `https://wa.me/`;
+                window.open(`${baseUrl}?text=${msg}`, '_blank');
+            }
+
+            document.getElementById('topWhatsappCoachBtn').addEventListener('click', sendToCoachWhatsapp);
+            document.getElementById('shareWhatsappBtn').addEventListener('click', sendToCoachWhatsapp);
+            document.getElementById('shareFullWhatsappBtn').addEventListener('click', sendToCoachWhatsapp);
+
+            // 6. Generador de Tarjeta Visual "Mi Propósito" en Canvas (Descarga PNG)
+            function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 4) {
+                const words = text.split(' ');
+                let line = '';
+                let linesCount = 0;
+                for (let n = 0; n < words.length; n++) {
+                    const testLine = line + words[n] + ' ';
+                    const metrics = ctx.measureText(testLine);
+                    if (metrics.width > maxWidth && n > 0) {
+                        linesCount++;
+                        if (linesCount >= maxLines) {
+                            ctx.fillText(line.trim() + '...', x, y);
+                            return y + lineHeight;
+                        }
+                        ctx.fillText(line.trim(), x, y);
+                        line = words[n] + ' ';
+                        y += lineHeight;
+                    } else {
+                        line = testLine;
+                    }
+                }
+                ctx.fillText(line.trim(), x, y);
+                return y + lineHeight;
+            }
+
+            document.getElementById('generateCardBtn').addEventListener('click', () => {
+                const canvas = document.getElementById('identityCardCanvas');
+                const ctx = canvas.getContext('2d');
+                const container = document.getElementById('cardPreviewContainer');
+
+                const name = participantInput.value.trim() || 'Mapa de Propósito';
+                const talentos = getVal('q1_6') !== 'Sin respuesta.' ? getVal('q1_6') : getVal('q1_7');
+                const pasiones = getVal('q2_1') !== 'Sin respuesta.' ? getVal('q2_1') : getVal('q1_4');
+                const valores = getVal('q2_3');
+                const sintesis = getVal('sintesis') !== 'Sin respuesta.' ? getVal('sintesis') : getVal('q2_4');
+                const meta = getVal('q3_1');
+
+                // Fondo Gradiente Azul Marino Oscuro & Oro (Acorde al Logo de Coach Juan Daniel)
+                const grad = ctx.createLinearGradient(0, 0, 1080, 1350);
+                grad.addColorStop(0, '#141b2d');
+                grad.addColorStop(0.5, '#1e293b');
+                grad.addColorStop(1, '#0f172a');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, 1080, 1350);
+
+                // Luces decorativas
+                ctx.fillStyle = 'rgba(217, 179, 130, 0.14)';
+                ctx.beginPath(); ctx.arc(950, 150, 300, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = 'rgba(16, 185, 129, 0.10)';
+                ctx.beginPath(); ctx.arc(120, 1200, 350, 0, Math.PI * 2); ctx.fill();
+
+                // Marco Dorado sutil
+                ctx.strokeStyle = 'rgba(217, 179, 130, 0.45)';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(50, 50, 980, 1250);
+
+                // Dibujar el Logo de Coach Juan Daniel en la esquina superior derecha de la tarjeta
+                const logoEl = document.getElementById('coachLogoImg');
+                if (logoEl && logoEl.complete && logoEl.naturalWidth > 0) {
+                    try {
+                        ctx.save();
+                        ctx.strokeStyle = '#d9b382';
+                        ctx.lineWidth = 3;
+                        ctx.strokeRect(838, 88, 144, 144);
+                        ctx.drawImage(logoEl, 840, 90, 140, 140);
+                        ctx.restore();
+                    } catch (e) {}
+                }
+
+                // Encabezado
+                ctx.fillStyle = '#e5c185';
+                ctx.font = 'bold 25px "Plus Jakarta Sans", sans-serif';
+                ctx.fillText('DESCUBRE TU PROPÓSITO • COACH JUAN DANIEL', 90, 125);
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '800 54px "Plus Jakarta Sans", sans-serif';
+                ctx.fillText(name.slice(0, 24), 90, 200);
+
+                // Línea divisoria dorada
+                ctx.fillStyle = '#e5c185';
+                ctx.fillRect(90, 230, 180, 6);
+
+                let currentY = 300;
+
+                function drawCardSection(title, iconText, content, accentColor, maxL = 3) {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.06)';
+                    ctx.fillRect(90, currentY, 900, maxL * 42 + 85);
+                    ctx.fillStyle = accentColor;
+                    ctx.fillRect(90, currentY, 8, maxL * 42 + 85);
+
+                    ctx.fillStyle = accentColor;
+                    ctx.font = 'bold 26px "Plus Jakarta Sans", sans-serif';
+                    ctx.fillText(`${iconText}  ${title}`, 125, currentY + 45);
+
+                    ctx.fillStyle = '#f1f5f9';
+                    ctx.font = '400 28px "Plus Jakarta Sans", sans-serif';
+                    wrapText(ctx, content, 125, currentY + 92, 830, 40, maxL);
+
+                    currentY += maxL * 42 + 110;
+                }
+
+                drawCardSection('TALENTOS Y APTITUDES INNATAS', '✦', talentos, '#34d399', 3);
+                drawCardSection('PASIONES Y FUENTES DE ENERGÍA', '🔥', pasiones, '#fbbf24', 3);
+                drawCardSection('VALORES INNEGOCIABLES', '💎', valores, '#38bdf8', 2);
+                drawCardSection('MI DEFINICIÓN DE PROPÓSITO', '🧭', sintesis, '#a7f3d0', 4);
+                drawCardSection('PRÓXIMA META IMPARABLE', '🎯', meta, '#fcd34d', 2);
+
+                // Footer de la tarjeta
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '500 22px "Plus Jakarta Sans", sans-serif';
+                ctx.fillText('Mentoría Estratégica & Propósito • Coach Juan Daniel', 90, 1265);
+                ctx.fillText(new Date().toLocaleDateString('es-AR'), 880, 1265);
+
+                container.classList.remove('hidden');
+                container.classList.add('flex');
+                container.scrollIntoView({ behavior: 'smooth' });
+
+                const link = document.createElement('a');
+                link.download = `Mi-Proposito-${name.replace(/\s+/g, '-')}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                showToast('¡Tarjeta de Propósito descargada como imagen PNG!', 'success', 3500);
+            });
+
+            // 7. Reiniciar Todo
+            document.getElementById('clearAllBtn').addEventListener('click', () => {
+                if (confirm('¿Estás seguro de que deseas limpiar las respuestas actuales en pantalla?')) {
+                    setFormData({});
+                    localStorage.removeItem(STORAGE_KEY);
+                    document.getElementById('exportArea').classList.add('hidden');
+                    document.getElementById('cardPreviewContainer').classList.add('hidden');
+                    showToast('Respuestas en pantalla limpiadas.', 'info', 2000);
+                }
+            });
+
+            // Inicializar
+            loadProgress();
+        });
+    </script>
+</body>
+</html>
